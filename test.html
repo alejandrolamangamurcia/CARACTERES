@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnóstico Caracteres</title>
+<style>
+  body{margin:0;padding:18px;background:#14181d;color:#e8e4da;font-family:system-ui,sans-serif;font-size:15px;line-height:1.5}
+  h1{font-size:19px;margin:0 0 14px}
+  .l{padding:9px 0;border-bottom:1px solid #313b46;display:flex;gap:10px;align-items:flex-start}
+  .n{font-family:ui-monospace,monospace;font-size:12px;color:#8a94a0;min-width:112px}
+  .ok{color:#6fa87c;font-weight:600}
+  .no{color:#c4685a;font-weight:600}
+  .v{flex:1;word-break:break-word}
+  #fin{margin-top:18px;padding:14px;border-radius:8px;font-weight:600}
+  .bien{background:rgba(111,168,124,.12);border:1px solid #6fa87c;color:#6fa87c}
+  .mal{background:rgba(196,104,90,.12);border:1px solid #c4685a;color:#c4685a}
+  #copiar{margin-top:14px;padding:11px 16px;border-radius:8px;background:#e0a83c;color:#14181d;border:0;font-size:15px;font-weight:600;width:100%}
+</style>
+</head>
+<body>
+<h1>Diagnóstico — Caracteres</h1>
+<div id="salida">Ejecutando…</div>
+<div id="fin"></div>
+<button id="copiar">Copiar resultado</button>
+<script>
+var R = [];
+function linea(nombre, ok, valor) {
+  R.push(nombre + ": " + (ok ? "OK" : "FALLA") + " — " + valor);
+  return '<div class="l"><span class="n">' + nombre + '</span><span class="' + (ok ? 'ok' : 'no') + '">' + (ok ? 'OK' : 'FALLA') + '</span><span class="v">' + valor + '</span></div>';
+}
+(function () {
+  var h = "";
+  var critico = true;
+
+  h += linea("VERSION", true, "test-1");
+  h += linea("Direccion", true, location.protocol + "//" + location.host + location.pathname);
+
+  var seguro = (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1");
+  h += linea("Contexto seguro", seguro, seguro ? "https o localhost" : "NO — es " + location.protocol + ", el cifrado no funcionara");
+  if (!seguro) critico = false;
+
+  var tieneCrypto = !!(window.crypto && window.crypto.subtle && typeof window.crypto.subtle.deriveKey === "function");
+  h += linea("Cifrado", tieneCrypto, tieneCrypto ? "crypto.subtle disponible" : "NO disponible");
+  if (!tieneCrypto) critico = false;
+
+  var tieneLS = false, msgLS = "";
+  try {
+    localStorage.setItem("__t", "1");
+    tieneLS = localStorage.getItem("__t") === "1";
+    localStorage.removeItem("__t");
+    msgLS = tieneLS ? "escribe y lee" : "no retiene";
+  } catch (e) { msgLS = "bloqueado: " + e.name; }
+  h += linea("Guardado", tieneLS, msgLS);
+  if (!tieneLS) critico = false;
+
+  var yaHay = false;
+  try { yaHay = !!localStorage.getItem("caracteres:vault"); } catch (e) {}
+  h += linea("Datos guardados", true, yaHay ? "SI — ya existe una caja fuerte" : "todavia ninguno");
+
+  h += linea("Service worker", true, ("serviceWorker" in navigator) ? "soportado" : "no soportado (no es grave)");
+
+  var mod = true, msgMod = "";
+  try { eval("(()=>{const a=[1,2];const [b]=a;return b??0})()"); msgMod = "sintaxis moderna admitida"; }
+  catch (e) { mod = false; msgMod = "navegador demasiado antiguo: " + e.message; }
+  h += linea("Navegador", mod, msgMod);
+  if (!mod) critico = false;
+
+  h += linea("Pantalla", true, window.innerWidth + "x" + window.innerHeight);
+  h += linea("Navegador ID", true, navigator.userAgent.slice(0, 90));
+
+  document.getElementById("salida").innerHTML = h;
+  var fin = document.getElementById("fin");
+  fin.className = critico ? "bien" : "mal";
+  fin.textContent = critico
+    ? "Todo lo necesario funciona aqui. Si la app no arranca, el fallo esta en la app y no en tu navegador."
+    : "Falta algo imprescindible (arriba, en rojo). La app no puede funcionar asi.";
+  R.push("RESULTADO: " + (critico ? "ENTORNO OK" : "ENTORNO INSUFICIENTE"));
+})();
+document.getElementById("copiar").onclick = function () {
+  var t = R.join("\n");
+  if (navigator.clipboard) navigator.clipboard.writeText(t).then(function(){ alert("Copiado. Pegalo en el chat."); }, function(){ prompt("Copia esto:", t); });
+  else prompt("Copia esto:", t);
+};
+</script>
+</body>
+</html>
