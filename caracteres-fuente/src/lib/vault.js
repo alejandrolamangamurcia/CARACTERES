@@ -79,17 +79,18 @@ export async function crear(pin) {
 export async function abrir(pin) {
   const crudo = localStorage.getItem(CLAVE_ALMACEN);
   if (!crudo) return false;
-  const caja = JSON.parse(crudo);
-  const salGuardada = deBase64(caja.sal);
-  const posible = await derivarClave(pin, salGuardada);
+  let posible, salGuardada, datosDescifrados;
   try {
-    datos = await descifrar(posible, caja.iv, caja.ct);
+    const caja = JSON.parse(crudo);
+    salGuardada = deBase64(caja.sal);
+    posible = await derivarClave(pin, salGuardada);
+    datosDescifrados = await descifrar(posible, caja.iv, caja.ct);
   } catch {
-    return false; // PIN incorrecto: AES-GCM detecta que no cuadra
+    return false; // PIN incorrecto o caja corrupta: no se puede abrir
   }
   clave = posible;
   sal = salGuardada;
-  datos = { ...datosVacios(), ...datos };
+  datos = { ...datosVacios(), ...datosDescifrados };
   return true;
 }
 

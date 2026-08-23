@@ -4,8 +4,9 @@
 import * as esbuild from 'esbuild';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const raiz = path.dirname(new URL(import.meta.url).pathname);
+const raiz = path.dirname(fileURLToPath(import.meta.url));
 const dev = process.argv.includes('--dev');
 const VERSION = fs.readFileSync(path.join(raiz, 'VERSION'), 'utf8').trim();
 
