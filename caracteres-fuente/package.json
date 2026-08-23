@@ -1,0 +1,28 @@
+{
+  "name": "caracteres",
+  "version": "8.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs --dev",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.6",
+    "esbuild": "^0.28.2",
+    "jsdom": "^30.0.1",
+    "lucide-react": "^1.33.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "vitest": "^4.1.11"
+  },
+  "private": true,
+  "type": "module"
+}

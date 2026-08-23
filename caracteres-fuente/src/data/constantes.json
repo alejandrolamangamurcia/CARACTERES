@@ -1,0 +1,75 @@
+{
+  "lf": [
+    "En discusión",
+    "En calma",
+    "Delante de otros"
+  ],
+  "nf": [
+    "Entré a rebatir",
+    "Lo dejé pasar",
+    "Puse un límite",
+    "Me callé y me quedé mal"
+  ],
+  "Gm": [
+    "Nada",
+    "Poco",
+    "Bastante",
+    "Todo"
+  ],
+  "ut": {
+    "roce": {
+      "l": "Roce",
+      "c": "var(--bad)"
+    },
+    "medijeron": {
+      "l": "Me dijeron",
+      "c": "var(--amb)"
+    },
+    "observacion": {
+      "l": "Observación",
+      "c": "var(--tx2)"
+    },
+    "acierto": {
+      "l": "Acierto",
+      "c": "var(--ok)"
+    },
+    "plan": {
+      "l": "Plan si→entonces",
+      "c": "var(--amb)"
+    }
+  },
+  "lu": [
+    {
+      "t": "Vocabulario sin estudiar",
+      "d": "Cada adjetivo que asocias a una persona real queda codificado con contexto. En unos meses describirás con precisión donde ahora dices «es raro» o «es buena gente»."
+    },
+    {
+      "t": "Convergencia de lo que te dicen",
+      "d": "Si tres personas distintas te dijeron lo mismo en años distintos, eso es tuyo. Si lo dijo una sola vez alguien enfadado, probablemente era munición de aquella discusión. El sistema separa las dos cosas."
+    },
+    {
+      "t": "Lo que te dicen frente a lo que haces",
+      "d": "Te llaman impaciente y tus roces muestran interrupciones: concuerda. Te llaman frío y no aparece nada parecido: o no lo registras, o no lo ves. Ahí está tu punto ciego."
+    },
+    {
+      "t": "Tu patrón de reacción",
+      "d": "De 14 discusiones, en 11 entraste a rebatir y en 3 lo dejaste pasar — y ninguna de esas 3 escaló. Eso no lo sabes hoy, y una vez lo ves, se corrige solo."
+    },
+    {
+      "t": "Recurrencia por persona y tema",
+      "d": "Deja de ser «discutimos mucho» y pasa a ser «6 de 8 roces con esta persona son sobre lo mismo». De eso ya se puede hablar en frío."
+    },
+    {
+      "t": "La línea temporal",
+      "d": "La manipulación lenta funciona porque tu recuerdo del punto de partida se desplaza con ella. Un registro fechado no se desplaza: enero dice una cosa y junio otra, y la pendiente se ve."
+    },
+    {
+      "t": "Con quién es y con quién no",
+      "d": "Si el tono duro aparece con una persona y con nadie más, no es «es así»: es «conmigo es así». Son dos problemas distintos con soluciones distintas."
+    },
+    {
+      "t": "Tus rasgos, salidos de tus actos",
+      "d": "Los adjetivos que tu propia conducta sostiene, no los que crees tener. Es el vocabulario aplicado a ti, y era la pregunta con la que empezó todo esto."
+    }
+  ]
+}

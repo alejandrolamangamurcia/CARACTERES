@@ -1,0 +1,2005 @@
+{
+  "dims": [
+    {
+      "n": 1,
+      "titulo": "Energía social",
+      "intro": "Cuánta estimulación social necesita una persona para estar a gusto, y cuánto espacio ocupa cuando está con otros. Es lo primero que se percibe de alguien y también lo que más se malinterpreta.",
+      "polos": [
+        {
+          "nombre": "Polo expansivo",
+          "familias": [
+            {
+              "nombre": "empuje social",
+              "entradas": [
+                {
+                  "p": "Extrovertido",
+                  "d": "se recarga estando con gente; la soledad prolongada le apaga.",
+                  "v": "sale de una comida de ocho personas con más energía de la que entró."
+                },
+                {
+                  "p": "Sociable",
+                  "d": "busca y disfruta el trato, se relaciona con facilidad.",
+                  "v": "a los diez minutos en un sitio nuevo ya está hablando con alguien."
+                },
+                {
+                  "p": "Expansivo",
+                  "d": "se expresa con amplitud: gesticula, alza la voz, ocupa sitio.",
+                  "v": "se le oye desde la otra punta del bar sin que esté gritando."
+                },
+                {
+                  "p": "Efusivo",
+                  "d": "expresa el afecto y el entusiasmo sin filtro ni contención.",
+                  "v": "te abraza al saludarte aunque hayáis quedado dos veces en la vida."
+                },
+                {
+                  "p": "Campechano",
+                  "d": "trata a todo el mundo con llaneza, sin marcar rango ni distancia.",
+                  "v": "tutea al jefe y al camarero exactamente igual."
+                },
+                {
+                  "p": "Locuaz",
+                  "d": "habla mucho y con facilidad. Neutro: describe fluidez, no exceso.",
+                  "v": "le preguntas algo de sí o no y te da tres minutos."
+                },
+                {
+                  "p": "Dicharachero",
+                  "d": "habla con gracia y soltura; anima la conversación.",
+                  "v": "la mesa se ríe cada vez que toma la palabra."
+                },
+                {
+                  "p": "Parlanchín",
+                  "d": "habla mucho, con matiz de exceso y de poco fondo.",
+                  "v": "llevas veinte minutos oyéndole y no te ha preguntado nada."
+                },
+                {
+                  "p": "Verborreico",
+                  "d": "habla en avalancha, sin filtro y sin dejar hueco.",
+                  "v": "haces una pregunta de treinta segundos y la respuesta dura diez minutos."
+                },
+                {
+                  "p": "Avasallador",
+                  "d": "su energía no deja hueco a los demás.",
+                  "v": "nadie más ha conseguido terminar una frase en toda la cena."
+                },
+                {
+                  "p": "Histriónico",
+                  "d": "busca ser el centro con dramatismo y teatralidad.",
+                  "v": "cuenta un pinchazo de rueda como si hubiera sobrevivido a un accidente."
+                }
+              ]
+            },
+            {
+              "nombre": "iniciativa y empuje",
+              "entradas": [
+                {
+                  "p": "Resuelto",
+                  "d": "se decide rápido y actúa sin darle vueltas.",
+                  "v": "mientras los demás debaten, ya ha llamado y lo ha resuelto."
+                },
+                {
+                  "p": "Emprendedor",
+                  "d": "arranca cosas por su cuenta.",
+                  "v": "tiene dos proyectos en marcha además de su trabajo."
+                },
+                {
+                  "p": "Lanzado",
+                  "d": "se mete en situaciones sociales sin cálculo previo.",
+                  "v": "se presenta él solo a la mesa que no conoce."
+                },
+                {
+                  "p": "Audaz",
+                  "d": "asume riesgos calculados que otros no asumirían.",
+                  "v": "pide el aumento con los números delante y sin rodeos."
+                },
+                {
+                  "p": "Temerario",
+                  "d": "asume riesgos sin calcular. Es el exceso de *audaz*.",
+                  "v": "firma la reforma sin presupuesto porque \"ya se verá\"."
+                },
+                {
+                  "p": "Asertivo",
+                  "d": "defiende lo suyo con claridad sin pisar al otro.",
+                  "v": "dice \"esto no me va bien\" sin enfadarse ni pedir perdón."
+                },
+                {
+                  "p": "Dominante",
+                  "d": "tiende a llevar el mando del grupo de forma natural.",
+                  "v": "nadie le ha nombrado nada y todos esperan a que él decida."
+                },
+                {
+                  "p": "Mandón",
+                  "d": "da órdenes sin tener autoridad para ello.",
+                  "v": "organiza tu cocina cuando viene a cenar a tu casa."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "nombre": "Polo reservado",
+          "familias": [
+            {
+              "nombre": "General",
+              "entradas": [
+                {
+                  "p": "Introvertido",
+                  "d": "se recarga en soledad. **No significa tímido**: puede ser un excelente conversador y aun así necesitar irse pronto.",
+                  "v": "después de un día social intenso necesita dos horas solo para recuperarse."
+                },
+                {
+                  "p": "Tímido",
+                  "d": "quiere el contacto pero le da apuro. El introvertido no lo necesita; el tímido sí lo quiere y no puede.",
+                  "v": "se le ve rondando el grupo sin acabar de entrar."
+                },
+                {
+                  "p": "Retraído",
+                  "d": "se aparta de los demás, de forma habitual y sin conflicto.",
+                  "v": "en las comidas de empresa se sienta en la punta y no se mueve."
+                },
+                {
+                  "p": "Reservado",
+                  "d": "trata con normalidad pero no cuenta lo suyo.",
+                  "v": "llevas tres años trabajando con él y no sabes si tiene hijos."
+                },
+                {
+                  "p": "Discreto",
+                  "d": "sabe qué se calla y cuándo. Es la versión virtuosa de reservado.",
+                  "v": "le cuentas algo delicado y sabes que ahí muere."
+                },
+                {
+                  "p": "Hermético",
+                  "d": "no deja ver absolutamente nada, ni siquiera lo que siente.",
+                  "v": "le dan una mala noticia y su cara no cambia."
+                },
+                {
+                  "p": "Taciturno",
+                  "d": "callado y de fondo sombrío. No es solo silencio: es silencio con peso.",
+                  "v": "está en la mesa y su silencio se nota."
+                },
+                {
+                  "p": "Huraño",
+                  "d": "rehúye el trato y además lo hace con aspereza.",
+                  "v": "contesta con monosílabos para que le dejes en paz."
+                },
+                {
+                  "p": "Esquivo",
+                  "d": "evita el contacto sin llegar a negarse abiertamente.",
+                  "v": "siempre tiene un plan justo el día que quedáis."
+                },
+                {
+                  "p": "Solitario",
+                  "d": "está a gusto solo y organiza su vida para estarlo.",
+                  "v": "se va de viaje solo por gusto, no por falta de compañía."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "titulo": "Trato con los demás",
+      "intro": "Cómo trata a la gente cuando no gana nada con ello. Es la dimensión que mejor predice si convivir con alguien resulta agradable.",
+      "polos": [
+        {
+          "nombre": "Polo cálido",
+          "familias": [
+            {
+              "nombre": "trato agradable",
+              "entradas": [
+                {
+                  "p": "Amable",
+                  "d": "trato considerado y educado por norma.",
+                  "v": "da las gracias al repartidor por su nombre."
+                },
+                {
+                  "p": "Cordial",
+                  "d": "cercano y cálido en el trato, sin llegar a la intimidad.",
+                  "v": "te recibe con una sonrisa real aunque apenas os conozcáis."
+                },
+                {
+                  "p": "Afable",
+                  "d": "agradable y fácil de tratar; da gusto hablar con él.",
+                  "v": "la conversación fluye sin esfuerzo desde el primer minuto."
+                },
+                {
+                  "p": "Afectuoso",
+                  "d": "muestra cariño de forma habitual.",
+                  "v": "pregunta por tu madre y se acuerda de cómo se llama."
+                },
+                {
+                  "p": "Accesible",
+                  "d": "se deja abordar, no pone barreras de rango.",
+                  "v": "le puedes interrumpir sin miedo aunque esté ocupado."
+                },
+                {
+                  "p": "Llano",
+                  "d": "sin pretensiones ni fórmulas; trata a todos igual.",
+                  "v": "habla igual con un cliente que con un peón."
+                }
+              ]
+            },
+            {
+              "nombre": "sensibilidad al otro",
+              "entradas": [
+                {
+                  "p": "Empático",
+                  "d": "capta lo que el otro siente. Es una capacidad, no una virtud: los manipuladores hábiles la tienen alta.",
+                  "v": "nota que estás mal antes de que lo digas."
+                },
+                {
+                  "p": "Compasivo",
+                  "d": "se conmueve con el mal ajeno y quiere aliviarlo. Aquí sí hay virtud: empatía **más** intención de ayudar.",
+                  "v": "se para a ayudar aunque le cueste llegar tarde."
+                },
+                {
+                  "p": "Considerado",
+                  "d": "piensa en el efecto que sus actos tienen sobre ti.",
+                  "v": "no llama a las once de la noche porque sabe que madrugas."
+                },
+                {
+                  "p": "Atento",
+                  "d": "se anticipa a lo que necesitas.",
+                  "v": "aparece con el café como lo tomas sin haberlo pedido."
+                },
+                {
+                  "p": "Solícito",
+                  "d": "se ofrece con prontitud, a veces más de la cuenta.",
+                  "v": "se levanta a ayudar antes de que nadie lo pida."
+                }
+              ]
+            },
+            {
+              "nombre": "dar",
+              "entradas": [
+                {
+                  "p": "Generoso",
+                  "d": "da con facilidad tiempo, dinero o atención.",
+                  "v": "te deja la furgoneta el fin de semana sin preguntar para qué."
+                },
+                {
+                  "p": "Desprendido",
+                  "d": "no se aferra a lo material.",
+                  "v": "regala la herramienta que le sobra en vez de guardarla por si acaso."
+                },
+                {
+                  "p": "Altruista",
+                  "d": "actúa en beneficio ajeno sin esperar retorno.",
+                  "v": "dedica los sábados a algo que no le da nada a cambio."
+                },
+                {
+                  "p": "Magnánimo",
+                  "d": "grandeza de ánimo: perdona, no se cobra las deudas, no se rebaja a la pequeñez.",
+                  "v": "pudiendo humillar al que se equivocó, le quita hierro delante de todos."
+                }
+              ]
+            },
+            {
+              "nombre": "ceder (con su exceso)",
+              "entradas": [
+                {
+                  "p": "Conciliador",
+                  "d": "busca el punto de acuerdo entre posturas.",
+                  "v": "reformula lo que dice cada uno hasta que ambos se reconocen."
+                },
+                {
+                  "p": "Transigente",
+                  "d": "cede en lo suyo para que la cosa avance.",
+                  "v": "acepta el sitio que no le gusta para no alargar el debate."
+                },
+                {
+                  "p": "Indulgente",
+                  "d": "perdona faltas con facilidad.",
+                  "v": "le fallas y a la semana siguiente ya está resuelto."
+                },
+                {
+                  "p": "Complaciente",
+                  "d": "cede por agradar, no por convicción. Aquí empieza el exceso.",
+                  "v": "dice que sí a todo y luego no puede con la carga."
+                },
+                {
+                  "p": "Sumiso",
+                  "d": "se pliega sistemáticamente a la voluntad ajena.",
+                  "v": "nunca sabes qué prefiere porque siempre dice \"lo que tú veas\"."
+                },
+                {
+                  "p": "Servil",
+                  "d": "se pliega **y además** se rebaja, buscando el favor del otro.",
+                  "v": "cambia de tono y de postura corporal cuando entra el jefe."
+                },
+                {
+                  "p": "Pusilánime",
+                  "d": "literalmente \"de ánimo pequeño\": le falta arrojo para sostener lo suyo.",
+                  "v": "sabe que tiene razón y calla por no discutir."
+                },
+                {
+                  "p": "Apocado",
+                  "d": "se achica ante los demás; pierde presencia en cuanto hay alguien de más carácter.",
+                  "v": "baja la voz y se retira de la conversación cuando entra el que manda."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "nombre": "Polo áspero",
+          "familias": [
+            {
+              "nombre": "frialdad en el trato",
+              "entradas": [
+                {
+                  "p": "Seco",
+                  "d": "trata sin adorno ni calidez. No implica mala intención.",
+                  "v": "contesta lo justo y se da la vuelta."
+                },
+                {
+                  "p": "Adusto",
+                  "d": "serio y severo en el gesto y en el trato.",
+                  "v": "nunca le has visto la cara relajada."
+                },
+                {
+                  "p": "Brusco",
+                  "d": "corta y responde de golpe, sin modular.",
+                  "v": "te interrumpe con un \"no\" seco y sigue a lo suyo."
+                },
+                {
+                  "p": "Cortante",
+                  "d": "zanja la conversación de forma tajante.",
+                  "v": "una frase suya deja la mesa en silencio."
+                },
+                {
+                  "p": "Desabrido",
+                  "d": "trato desagradable, sin gracia, que deja mal sabor.",
+                  "v": "sales de hablar con él molesto sin saber exactamente por qué."
+                },
+                {
+                  "p": "Displicente",
+                  "d": "te trata con desgana, como si atenderte le supusiera un esfuerzo.",
+                  "v": "responde sin levantar la vista del móvil."
+                },
+                {
+                  "p": "Despectivo",
+                  "d": "trata con desprecio abierto.",
+                  "v": "se refiere a tu trabajo como \"eso que haces tú\"."
+                },
+                {
+                  "p": "Frío",
+                  "d": "no conecta emocionalmente, ni da ni pide.",
+                  "v": "le cuentas una desgracia y pasa al siguiente tema."
+                },
+                {
+                  "p": "Indiferente",
+                  "d": "le da igual lo que te pase.",
+                  "v": "no pregunta ni una vez cómo salió aquello que te preocupaba."
+                },
+                {
+                  "p": "Insensible",
+                  "d": "no registra el daño que causa o que ve.",
+                  "v": "hace el chiste justo delante de la persona a la que le duele."
+                },
+                {
+                  "p": "Desconsiderado",
+                  "d": "no tiene en cuenta el efecto de sus actos sobre los demás.",
+                  "v": "aparca donde te bloquea la salida porque le venía bien."
+                }
+              ]
+            },
+            {
+              "nombre": "irritabilidad y hostilidad",
+              "entradas": [
+                {
+                  "p": "Irritable",
+                  "d": "salta con facilidad ante lo pequeño.",
+                  "v": "un semáforo le arruina la mañana."
+                },
+                {
+                  "p": "Susceptible",
+                  "d": "se ofende con facilidad y lee ataque donde no lo hay.",
+                  "v": "le comentas algo neutro y responde a la defensiva."
+                },
+                {
+                  "p": "Quisquilloso",
+                  "d": "se molesta por detalles nimios y los saca a relucir.",
+                  "v": "dedica diez minutos a que le pusieron la servilleta mal doblada."
+                },
+                {
+                  "p": "Iracundo",
+                  "d": "propenso a la ira intensa.",
+                  "v": "pasa de cero a gritos en un segundo."
+                },
+                {
+                  "p": "Hostil",
+                  "d": "su disposición de fondo hacia los demás es de enemistad.",
+                  "v": "interpreta cualquier propuesta ajena como una maniobra en su contra."
+                },
+                {
+                  "p": "Belicoso",
+                  "d": "busca activamente la pelea.",
+                  "v": "entra en discusiones que no van con él."
+                },
+                {
+                  "p": "Cizañero",
+                  "d": "siembra discordia entre otros.",
+                  "v": "le cuenta a cada uno lo que dijo el otro, con retoques."
+                },
+                {
+                  "p": "Rencoroso",
+                  "d": "guarda la ofensa mucho tiempo.",
+                  "v": "saca en una discusión algo que pasó hace seis años."
+                },
+                {
+                  "p": "Vengativo",
+                  "d": "además de guardarla, se la cobra.",
+                  "v": "espera el momento y te deja tirado justo cuando le necesitas."
+                },
+                {
+                  "p": "Resentido",
+                  "d": "arrastra un agravio general contra la vida o contra un grupo.",
+                  "v": "atribuye todo éxito ajeno a un enchufe o a una trampa."
+                }
+              ]
+            },
+            {
+              "nombre": "crítica hiriente",
+              "entradas": [
+                {
+                  "p": "Criticón",
+                  "d": "encuentra el defecto de todo.",
+                  "v": "en cualquier restaurante hay algo que está mal."
+                },
+                {
+                  "p": "Mordaz",
+                  "d": "critica con ingenio y hace daño. La gracia es parte del filo.",
+                  "v": "suelta una frase que hace reír a todos menos a uno."
+                },
+                {
+                  "p": "Sarcástico",
+                  "d": "dice lo contrario de lo que quiere decir para herir.",
+                  "v": "aplaude despacio y dice \"qué bien lo has hecho\"."
+                },
+                {
+                  "p": "Irónico",
+                  "d": "dice lo contrario de lo que quiere decir, sin intención de herir. La ironía es un recurso; el sarcasmo es un arma.",
+                  "v": "comenta \"menudo veranito\" en pleno diluvio."
+                },
+                {
+                  "p": "Cáustico",
+                  "d": "su crítica corroe, va contra la persona y no contra la obra.",
+                  "v": "no critica tu idea, critica que se te haya ocurrido a ti."
+                },
+                {
+                  "p": "Faltón",
+                  "d": "cruza la línea del respeto con facilidad.",
+                  "v": "en cuanto se calienta, la discusión pasa a lo personal."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "titulo": "Orden y voluntad",
+      "intro": "Si se puede contar con esa persona: si hace lo que dice, cuándo lo hace y con qué cuidado. Es la dimensión que mejor predice el rendimiento en el trabajo y la salud de una convivencia.",
+      "polos": [
+        {
+          "nombre": "Polo metódico",
+          "familias": [
+            {
+              "nombre": "fiabilidad",
+              "entradas": [
+                {
+                  "p": "Responsable",
+                  "d": "responde por lo que hace y por lo que le corresponde.",
+                  "v": "asume el error sin buscar a quién repartírselo."
+                },
+                {
+                  "p": "Cumplidor",
+                  "d": "hace lo que dice que va a hacer.",
+                  "v": "dijo el jueves y estaba el jueves."
+                },
+                {
+                  "p": "Fiable",
+                  "d": "puedes construir sobre lo que promete.",
+                  "v": "le delegas algo importante y dejas de pensar en ello."
+                },
+                {
+                  "p": "Formal",
+                  "d": "cumple lo pactado y guarda las formas del compromiso.",
+                  "v": "avisa con antelación cuando no va a poder."
+                },
+                {
+                  "p": "Puntual",
+                  "d": "llega a la hora. Parece menor y es la señal barata más informativa que existe.",
+                  "v": "está en la puerta cinco minutos antes."
+                }
+              ]
+            },
+            {
+              "nombre": "orden y cuidado",
+              "entradas": [
+                {
+                  "p": "Organizado",
+                  "d": "tiene un sistema y lo mantiene.",
+                  "v": "encuentra el papel de hace dos años en treinta segundos."
+                },
+                {
+                  "p": "Metódico",
+                  "d": "sigue siempre el mismo procedimiento para lo mismo.",
+                  "v": "recoge las herramientas en el mismo orden todos los días."
+                },
+                {
+                  "p": "Sistemático",
+                  "d": "aborda las cosas por partes y sin saltarse pasos.",
+                  "v": "antes de tocar nada, comprueba lo que ya ha comprobado mil veces."
+                },
+                {
+                  "p": "Meticuloso",
+                  "d": "atiende al detalle pequeño.",
+                  "v": "repasa el remate que nadie va a ver."
+                },
+                {
+                  "p": "Minucioso",
+                  "d": "meticuloso **y** exhaustivo: no deja nada fuera.",
+                  "v": "entrega el informe con los ocho casos, no con los tres importantes."
+                },
+                {
+                  "p": "Escrupuloso",
+                  "d": "cuidado extremo, con un componente de conciencia moral: no se permite hacerlo regular.",
+                  "v": "rehace un trabajo ya cobrado porque no le convence."
+                },
+                {
+                  "p": "Pulcro",
+                  "d": "limpio y cuidado en la forma y en la presentación.",
+                  "v": "su furgoneta y sus cajas están igual de ordenadas que su casa."
+                }
+              ]
+            },
+            {
+              "nombre": "voluntad sostenida",
+              "entradas": [
+                {
+                  "p": "Disciplinado",
+                  "d": "hace lo que toca aunque no le apetezca.",
+                  "v": "mantiene la rutina también en las semanas malas."
+                },
+                {
+                  "p": "Constante",
+                  "d": "sostiene el esfuerzo en el tiempo.",
+                  "v": "lleva cuatro años haciendo lo mismo sin bajar el ritmo."
+                },
+                {
+                  "p": "Tenaz",
+                  "d": "no suelta la presa aunque la cosa se ponga difícil.",
+                  "v": "lleva tres días con la misma avería y sigue midiendo."
+                },
+                {
+                  "p": "Perseverante",
+                  "d": "insiste tras el fracaso.",
+                  "v": "le dicen que no y vuelve con otra propuesta."
+                },
+                {
+                  "p": "Diligente",
+                  "d": "hace las cosas con prontitud **y** con cuidado. Las dos a la vez.",
+                  "v": "pides algo y está hecho esa misma tarde, y bien."
+                },
+                {
+                  "p": "Aplicado",
+                  "d": "se esfuerza en aprender y en hacerlo bien.",
+                  "v": "se estudia el manual del equipo nuevo antes de que llegue."
+                },
+                {
+                  "p": "Previsor",
+                  "d": "se adelanta a lo que puede pasar.",
+                  "v": "lleva el recambio que casi nunca hace falta."
+                },
+                {
+                  "p": "Prudente",
+                  "d": "mide el riesgo antes de actuar.",
+                  "v": "no toca el cuadro sin comprobar dos veces que no hay tensión."
+                },
+                {
+                  "p": "Cauto",
+                  "d": "actúa con reserva, no se expone.",
+                  "v": "no da su opinión hasta saber quién hay en la sala."
+                }
+              ]
+            },
+            {
+              "nombre": "el exceso de orden",
+              "entradas": [
+                {
+                  "p": "Perfeccionista",
+                  "d": "no da nada por bueno hasta que es impecable.",
+                  "v": "la entrega se retrasa por detalles que nadie ha pedido."
+                },
+                {
+                  "p": "Puntilloso",
+                  "d": "se detiene en detalles menores y los convierte en asunto.",
+                  "v": "corrige una coma en un mensaje de WhatsApp."
+                },
+                {
+                  "p": "Rígido",
+                  "d": "no adapta el procedimiento aunque la situación haya cambiado.",
+                  "v": "sigue el protocolo cuando el protocolo ya no sirve."
+                },
+                {
+                  "p": "Cuadriculado",
+                  "d": "solo concibe una manera de hacer las cosas.",
+                  "v": "rechaza una solución mejor porque \"no es como se hace\"."
+                },
+                {
+                  "p": "Maniático",
+                  "d": "tiene fijaciones concretas e innegociables.",
+                  "v": "no puede empezar si la mesa no está exactamente así."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "nombre": "Polo descuidado",
+          "familias": [
+            {
+              "nombre": "General",
+              "entradas": [
+                {
+                  "p": "Desorganizado",
+                  "d": "no tiene sistema.",
+                  "v": "pierde veinte minutos cada mañana buscando algo."
+                },
+                {
+                  "p": "Caótico",
+                  "d": "su desorden le desborda y salpica a los demás.",
+                  "v": "su desorden te obliga a ti a rehacer cosas."
+                },
+                {
+                  "p": "Disperso",
+                  "d": "empieza muchas cosas y salta de una a otra.",
+                  "v": "tiene cinco tareas abiertas y ninguna cerrada."
+                },
+                {
+                  "p": "Descuidado",
+                  "d": "no pone atención en lo que hace.",
+                  "v": "deja el trabajo bien hecho por dentro y hecho un desastre por fuera."
+                },
+                {
+                  "p": "Negligente",
+                  "d": "su descuido causa daño real. Es la versión con consecuencias.",
+                  "v": "no revisa lo que sabe que hay que revisar y alguien lo paga."
+                },
+                {
+                  "p": "Chapucero",
+                  "d": "hace las cosas rápido y mal, dejándolas \"que aguanten\".",
+                  "v": "la solución dura tres semanas y luego hay que volver."
+                },
+                {
+                  "p": "Dejado",
+                  "d": "abandona el cuidado de lo suyo (trabajo, casa, aspecto).",
+                  "v": "lo que se estropea se queda estropeado."
+                },
+                {
+                  "p": "Informal",
+                  "d": "no cumple lo que dice ni avisa.",
+                  "v": "quedáis y desaparece sin mensaje."
+                },
+                {
+                  "p": "Inconstante",
+                  "d": "arranca con fuerza y abandona.",
+                  "v": "lleva ocho aficiones empezadas y ninguna a medio camino."
+                },
+                {
+                  "p": "Voluble",
+                  "d": "cambia de criterio o de ánimo con facilidad.",
+                  "v": "lo que hoy es prioridad absoluta, el lunes ni se menciona."
+                },
+                {
+                  "p": "Perezoso",
+                  "d": "evita el esfuerzo.",
+                  "v": "siempre encuentra el modo de que lo haga otro."
+                },
+                {
+                  "p": "Indolente",
+                  "d": "ni se esfuerza ni le importa no esforzarse. Añade indiferencia a la pereza.",
+                  "v": "le dices que va a salir mal y se encoge de hombros."
+                },
+                {
+                  "p": "Apático",
+                  "d": "no le mueve nada, ni siquiera lo suyo.",
+                  "v": "le ofreces algo que le gustaba y le da igual."
+                },
+                {
+                  "p": "Acomodado",
+                  "d": "se instala en lo cómodo y no sale de ahí.",
+                  "v": "rechaza una oportunidad clara por no cambiar de rutina."
+                },
+                {
+                  "p": "Impulsivo",
+                  "d": "actúa antes de pensar.",
+                  "v": "compra, contesta o dimite en caliente."
+                },
+                {
+                  "p": "Irreflexivo",
+                  "d": "no valora las consecuencias.",
+                  "v": "dice lo primero que le pasa por la cabeza delante de quien no debe."
+                },
+                {
+                  "p": "Atolondrado",
+                  "d": "se lía, se precipita y se equivoca por atropello.",
+                  "v": "sale de casa sin las llaves tres veces por semana."
+                },
+                {
+                  "p": "Frívolo",
+                  "d": "no da peso a lo que lo tiene.",
+                  "v": "se toma a broma el problema serio de otro."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "titulo": "Temple emocional",
+      "intro": "Cómo reacciona por dentro cuando las cosas se tuercen: con qué facilidad se altera, cuánto tarda en volver a su sitio y qué hace mientras tanto. Es la dimensión que más sufre la gente que convive con ella y la que menos se ve en una primera impresión.",
+      "polos": [
+        {
+          "nombre": "Polo sereno",
+          "familias": [
+            {
+              "nombre": "General",
+              "entradas": [
+                {
+                  "p": "Sereno",
+                  "d": "mantiene la calma cuando la situación se complica.",
+                  "v": "salta la alarma y él baja el tono en vez de subirlo."
+                },
+                {
+                  "p": "Templado",
+                  "d": "tiene la emoción bajo control sin reprimirla; ni frío ni desbordado.",
+                  "v": "se enfada de verdad y aun así se le entiende todo lo que dice."
+                },
+                {
+                  "p": "Ecuánime",
+                  "d": "mantiene el mismo criterio le afecte a él o a otro.",
+                  "v": "juzga igual el error de su amigo que el del que le cae mal."
+                },
+                {
+                  "p": "Imperturbable",
+                  "d": "nada le altera visiblemente.",
+                  "v": "le dan la peor noticia del año y sigue con el mismo pulso."
+                },
+                {
+                  "p": "Flemático",
+                  "d": "lento en alterarse, de reacción pausada por temperamento.",
+                  "v": "todos corriendo y él a su ritmo, y llega igual."
+                },
+                {
+                  "p": "Estoico",
+                  "d": "aguanta el dolor y la adversidad sin quejarse.",
+                  "v": "lleva dos meses con un problema serio y te enteras por otro."
+                },
+                {
+                  "p": "Sosegado",
+                  "d": "vive a un ritmo interior tranquilo.",
+                  "v": "nunca tiene prisa aunque vaya justo."
+                },
+                {
+                  "p": "Apacible",
+                  "d": "de trato y de humor suaves, transmite calma.",
+                  "v": "estar con él te baja las pulsaciones."
+                },
+                {
+                  "p": "Resiliente",
+                  "d": "se recupera del golpe y sigue.",
+                  "v": "pierde el trabajo y a las dos semanas ya está en otra cosa."
+                },
+                {
+                  "p": "Entero",
+                  "d": "no se rompe delante del problema.",
+                  "v": "organiza el funeral de su padre sin venirse abajo."
+                },
+                {
+                  "p": "Curtido",
+                  "d": "se ha endurecido por experiencia acumulada, no por carácter.",
+                  "v": "lo que a los demás les parece una crisis, él ya lo ha visto tres veces."
+                },
+                {
+                  "p": "Aplomado",
+                  "d": "tiene seguridad de porte: se le nota firme y asentado.",
+                  "v": "habla delante de cincuenta personas sin que le tiemble la voz."
+                },
+                {
+                  "p": "Seguro de sí",
+                  "d": "confía en su propio criterio.",
+                  "v": "sostiene su decisión aunque nadie más la comparta."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "nombre": "Polo inestable",
+          "familias": [
+            {
+              "nombre": "ansiedad",
+              "entradas": [
+                {
+                  "p": "Ansioso",
+                  "d": "anticipa continuamente lo que puede salir mal.",
+                  "v": "pregunta cinco veces por algo que ya está resuelto."
+                },
+                {
+                  "p": "Aprensivo",
+                  "d": "teme males concretos, sobre todo daños y enfermedades.",
+                  "v": "cualquier molestia física le parece el principio de algo grave."
+                },
+                {
+                  "p": "Inquieto",
+                  "d": "no puede parar, ni de cuerpo ni de cabeza.",
+                  "v": "no aguanta sentado toda una comida."
+                },
+                {
+                  "p": "Nervioso",
+                  "d": "reacciona con tensión ante cualquier estímulo.",
+                  "v": "se le nota en las manos antes de una reunión rutinaria."
+                },
+                {
+                  "p": "Tenso",
+                  "d": "vive con el cuerpo y el trato agarrotados.",
+                  "v": "le cuesta reírse aunque quiera."
+                }
+              ]
+            },
+            {
+              "nombre": "inseguridad",
+              "entradas": [
+                {
+                  "p": "Inseguro",
+                  "d": "duda de su propio valor y de su criterio.",
+                  "v": "te pide opinión sobre algo que domina mejor que tú."
+                },
+                {
+                  "p": "Indeciso",
+                  "d": "no consigue elegir.",
+                  "v": "lleva ocho meses con la misma decisión encima de la mesa."
+                },
+                {
+                  "p": "Dubitativo",
+                  "d": "se lo replantea todo mientras lo dice.",
+                  "v": "cambia de postura tres veces en la misma frase."
+                },
+                {
+                  "p": "Vacilante",
+                  "d": "arranca la acción y se echa atrás.",
+                  "v": "dice que sí, y a la hora escribe para matizarlo."
+                },
+                {
+                  "p": "Frágil",
+                  "d": "se rompe con poco.",
+                  "v": "una crítica menor le deja fuera de juego el resto del día."
+                }
+              ]
+            },
+            {
+              "nombre": "descontrol",
+              "entradas": [
+                {
+                  "p": "Irascible",
+                  "d": "se enciende rápido y fuerte.",
+                  "v": "la discusión pasa a gritos en menos de un minuto."
+                },
+                {
+                  "p": "Explosivo",
+                  "d": "acumula en silencio y estalla de golpe.",
+                  "v": "aguanta tres semanas y revienta por una tontería."
+                },
+                {
+                  "p": "Temperamental",
+                  "d": "su humor manda sobre su conducta.",
+                  "v": "el trato que te da depende de cómo se haya levantado."
+                },
+                {
+                  "p": "Volátil",
+                  "d": "cambia de estado emocional sin transición.",
+                  "v": "pasa de la euforia al desplome en la misma tarde."
+                },
+                {
+                  "p": "Visceral",
+                  "d": "reacciona desde la tripa, sin pasar por la cabeza.",
+                  "v": "responde al mensaje antes de acabar de leerlo."
+                }
+              ]
+            },
+            {
+              "nombre": "fondo sombrío",
+              "entradas": [
+                {
+                  "p": "Melancólico",
+                  "d": "tiene un fondo triste estable, sin causa actual.",
+                  "v": "está bien y aun así hay algo apagado debajo."
+                },
+                {
+                  "p": "Pesimista",
+                  "d": "espera por defecto que salga mal.",
+                  "v": "ante cualquier plan, su primera frase es el inconveniente."
+                },
+                {
+                  "p": "Derrotista",
+                  "d": "da por perdido antes de intentarlo.",
+                  "v": "ni presenta la oferta porque \"total, no nos la van a dar\"."
+                },
+                {
+                  "p": "Agorero",
+                  "d": "anuncia desgracias.",
+                  "v": "siempre tiene el caso de alguien a quien le fue fatal."
+                },
+                {
+                  "p": "Victimista",
+                  "d": "se coloca sistemáticamente en el papel de perjudicado.",
+                  "v": "cualquier problema acaba siendo algo que le han hecho a él."
+                }
+              ]
+            },
+            {
+              "nombre": "desconfianza",
+              "entradas": [
+                {
+                  "p": "Receloso",
+                  "d": "desconfía sin motivo declarado.",
+                  "v": "te pregunta tres veces lo mismo con otras palabras."
+                },
+                {
+                  "p": "Suspicaz",
+                  "d": "busca activamente la segunda intención en lo que dices.",
+                  "v": "le haces un cumplido y responde \"¿por qué me dices eso?\"."
+                },
+                {
+                  "p": "Desconfiado",
+                  "d": "parte de la base de que la gente falla.",
+                  "v": "nunca delega nada de verdad."
+                },
+                {
+                  "p": "Celoso",
+                  "d": "teme perder a alguien frente a un tercero.",
+                  "v": "le cambia la cara cuando aparece cierta persona."
+                },
+                {
+                  "p": "Posesivo",
+                  "d": "trata el vínculo como propiedad.",
+                  "v": "le molesta el plan al que no está invitado."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "titulo": "Mente y curiosidad",
+      "intro": "Cómo funciona su cabeza: qué le interesa, cómo procesa lo nuevo y cuánta realidad admite que no encaja con lo que ya cree. Ojo: **esta dimensión no mide inteligencia**. Hay gente muy lista y muy cerrada, y gente de capacidad normal y muy abierta.",
+      "polos": [
+        {
+          "nombre": "Polo abierto",
+          "familias": [
+            {
+              "nombre": "curiosidad",
+              "entradas": [
+                {
+                  "p": "Curioso",
+                  "d": "quiere saber cómo funcionan las cosas.",
+                  "v": "desmonta el aparato averiado aunque ya haya comprado el nuevo."
+                },
+                {
+                  "p": "Inquieto (intelectualmente)",
+                  "d": "no se conforma con lo que ya sabe.",
+                  "v": "se mete en un tema nuevo cada pocos meses."
+                },
+                {
+                  "p": "Ávido",
+                  "d": "devora información con hambre.",
+                  "v": "se lee la documentación entera, no el resumen."
+                }
+              ]
+            },
+            {
+              "nombre": "agudeza",
+              "entradas": [
+                {
+                  "p": "Agudo",
+                  "d": "capta rápido, incluso lo que se dice a medias.",
+                  "v": "entiende el problema antes de que acabes de explicarlo."
+                },
+                {
+                  "p": "Perspicaz",
+                  "d": "ve lo que otros no ven, no lo que otros ven más lento.",
+                  "v": "señala el detalle que a todos se les había pasado."
+                },
+                {
+                  "p": "Sagaz",
+                  "d": "perspicaz **y** práctico: usa lo que ve para anticiparse.",
+                  "v": "prevé la maniobra del otro antes de que la haga."
+                },
+                {
+                  "p": "Lúcido",
+                  "d": "ve la situación con claridad, sin engañarse.",
+                  "v": "es el único que nombra en voz alta lo que todos evitan."
+                },
+                {
+                  "p": "Ingenioso",
+                  "d": "encuentra soluciones o salidas originales.",
+                  "v": "resuelve con lo que tiene a mano algo que requería material."
+                },
+                {
+                  "p": "Ocurrente",
+                  "d": "se le ocurren cosas con gracia y rapidez.",
+                  "v": "tiene siempre la réplica justa en el momento justo."
+                },
+                {
+                  "p": "Reflexivo",
+                  "d": "piensa las cosas antes de opinar.",
+                  "v": "pide un día antes de contestar a algo importante."
+                },
+                {
+                  "p": "Analítico",
+                  "d": "descompone los problemas en partes.",
+                  "v": "antes de responder, ordena en voz alta las variables."
+                }
+              ]
+            },
+            {
+              "nombre": "cultivo y estilo",
+              "entradas": [
+                {
+                  "p": "Culto",
+                  "d": "tiene conocimiento amplio y lo ha integrado.",
+                  "v": "relaciona lo que estás contando con algo de otro campo."
+                },
+                {
+                  "p": "Erudito",
+                  "d": "sabe muchísimo de un terreno concreto.",
+                  "v": "conoce la excepción de la excepción."
+                },
+                {
+                  "p": "Versado",
+                  "d": "tiene práctica y conocimiento en una materia.",
+                  "v": "se maneja en el asunto sin necesitar consultar."
+                },
+                {
+                  "p": "Inconformista",
+                  "d": "no acepta lo establecido por el hecho de estar establecido.",
+                  "v": "pregunta \"¿y por qué se hace así?\" en su primer día."
+                },
+                {
+                  "p": "Heterodoxo",
+                  "d": "se aparta de la doctrina aceptada por convicción propia, no por rebeldía.",
+                  "v": "defiende en público el método que su gremio da por descartado."
+                },
+                {
+                  "p": "Original",
+                  "d": "piensa por su cuenta y llega a sitios propios.",
+                  "v": "su propuesta no se parece a ninguna de las de la sala."
+                },
+                {
+                  "p": "Excéntrico",
+                  "d": "se sale de la norma en sus gustos o costumbres, sin buscarlo.",
+                  "v": "le da igual que le miren raro y ni se ha dado cuenta."
+                },
+                {
+                  "p": "Refinado",
+                  "d": "tiene el gusto educado y distingue matices.",
+                  "v": "nota la diferencia donde los demás vemos lo mismo."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "nombre": "Polo cerrado",
+          "familias": [
+            {
+              "nombre": "General",
+              "entradas": [
+                {
+                  "p": "Convencional",
+                  "d": "se mueve por lo aceptado y no lo cuestiona.",
+                  "v": "su respuesta a por qué es \"porque siempre se ha hecho así\"."
+                },
+                {
+                  "p": "Rutinario",
+                  "d": "vive en lo repetido y evita lo nuevo.",
+                  "v": "lleva doce años pidiendo el mismo plato en el mismo sitio."
+                },
+                {
+                  "p": "Prosaico",
+                  "d": "solo valora lo práctico e inmediato.",
+                  "v": "lo que no tiene utilidad directa le parece una tontería."
+                },
+                {
+                  "p": "Dogmático",
+                  "d": "sus opiniones no admiten revisión: son verdades.",
+                  "v": "no dice \"yo creo\", dice \"es así\"."
+                },
+                {
+                  "p": "Intransigente",
+                  "d": "no cede ni un milímetro ante otra postura.",
+                  "v": "rechaza el punto intermedio aunque le beneficie."
+                },
+                {
+                  "p": "Obcecado",
+                  "d": "se ha cerrado en una idea y ya no procesa nada que la contradiga.",
+                  "v": "le enseñas la prueba y busca por qué la prueba está mal."
+                },
+                {
+                  "p": "Cerril",
+                  "d": "cerrado por bruto, no por convicción.",
+                  "v": "ni siquiera escucha el argumento entero."
+                },
+                {
+                  "p": "Obtuso",
+                  "d": "no llega a entender, por lentitud o por estrechez.",
+                  "v": "se lo has explicado de cuatro maneras y sigue en la primera."
+                },
+                {
+                  "p": "Sectario",
+                  "d": "solo admite lo que viene de los suyos.",
+                  "v": "el mismo argumento le vale o no según quién lo diga."
+                },
+                {
+                  "p": "Prejuicioso",
+                  "d": "juzga por la categoría, no por la persona.",
+                  "v": "ya sabe cómo es alguien antes de cruzar una palabra."
+                },
+                {
+                  "p": "Crédulo",
+                  "d": "se cree lo que le cuentan sin filtrar.",
+                  "v": "reenvía cualquier cosa que le llega."
+                },
+                {
+                  "p": "Ingenuo",
+                  "d": "no ve la malicia ajena. **No es tonto**: es que no la busca.",
+                  "v": "le engañan y sigue pensando que fue un malentendido."
+                },
+                {
+                  "p": "Cándido",
+                  "d": "ingenuo con un punto de pureza; ni concibe el engaño.",
+                  "v": "se sorprende sinceramente de que alguien mienta."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 6,
+      "titulo": "Honestidad y ego",
+      "intro": "Si va de frente o va a lo suyo, y cuánto sitio ocupa su propia imagen. Es la dimensión decisiva: puedes convivir con alguien desordenado, tímido o nervioso, pero no con alguien de quien no te fías. También es donde más se falla al elegir la palabra, porque hay quince términos parecidos y cada uno significa algo distinto.",
+      "polos": [
+        {
+          "nombre": "Polo íntegro",
+          "familias": [
+            {
+              "nombre": "fondo moral",
+              "entradas": [
+                {
+                  "p": "Íntegro",
+                  "d": "sus actos coinciden con lo que dice creer, también cuando nadie mira.",
+                  "v": "devuelve el dinero de más sin que nadie lo hubiera notado."
+                },
+                {
+                  "p": "Honrado",
+                  "d": "no toma lo que no le corresponde.",
+                  "v": "factura las horas que ha hecho, no las que podría colar."
+                },
+                {
+                  "p": "Recto",
+                  "d": "no se desvía de lo que considera correcto, ni por presión ni por interés.",
+                  "v": "pierde el cliente antes que firmar algo que no se ajusta a norma."
+                },
+                {
+                  "p": "Cabal",
+                  "d": "persona completa y de juicio sensato; de una pieza.",
+                  "v": "todo el mundo que le conoce dice exactamente lo mismo de él."
+                },
+                {
+                  "p": "Decente",
+                  "d": "cumple lo mínimo que se le debe a los demás.",
+                  "v": "avisa al vecino antes de empezar la obra."
+                },
+                {
+                  "p": "Justo",
+                  "d": "da a cada uno lo suyo.",
+                  "v": "reparte el mérito incluyendo al que no estaba delante."
+                },
+                {
+                  "p": "Leal",
+                  "d": "sostiene el vínculo cuando cuesta.",
+                  "v": "no se apunta a criticarte cuando no estás."
+                }
+              ]
+            },
+            {
+              "nombre": "transparencia",
+              "entradas": [
+                {
+                  "p": "Sincero",
+                  "d": "dice lo que piensa.",
+                  "v": "responde a lo que le has preguntado de verdad."
+                },
+                {
+                  "p": "Franco",
+                  "d": "dice lo que piensa **aunque incomode**.",
+                  "v": "te dice que la idea no es buena delante de todos."
+                },
+                {
+                  "p": "Directo",
+                  "d": "va al asunto sin rodeos.",
+                  "v": "la conversación dura tres minutos y queda todo claro."
+                },
+                {
+                  "p": "Transparente",
+                  "d": "no oculta ni sus intenciones ni sus intereses.",
+                  "v": "dice de entrada qué gana él con esto."
+                }
+              ]
+            },
+            {
+              "nombre": "humildad",
+              "entradas": [
+                {
+                  "p": "Humilde",
+                  "d": "conoce su valor y no necesita exhibirlo.",
+                  "v": "sabe más que nadie en la sala y deja hablar a los demás."
+                },
+                {
+                  "p": "Modesto",
+                  "d": "quita importancia a sus propios méritos.",
+                  "v": "le felicitan y desvía el mérito al equipo, y es verdad."
+                },
+                {
+                  "p": "Sencillo",
+                  "d": "no se rodea de aparato ni de distancia.",
+                  "v": "tiene un cargo importante y no lo mencionaría jamás."
+                },
+                {
+                  "p": "Autocrítico",
+                  "d": "se examina a sí mismo con el mismo rasero que a los demás.",
+                  "v": "es el primero en decir en qué se equivocó."
+                },
+                {
+                  "p": "Agradecido",
+                  "d": "reconoce lo que recibe.",
+                  "v": "se acuerda un año después del favor que le hiciste."
+                },
+                {
+                  "p": "Desinteresado",
+                  "d": "actúa sin buscar retorno.",
+                  "v": "ayuda igual al que nunca podrá devolvérselo."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "nombre": "Polo interesado",
+          "familias": [
+            {
+              "nombre": "el ego (el grupo más confundido de toda la guía)",
+              "entradas": [
+                {
+                  "p": "Soberbio",
+                  "d": "se sobrevalora a sí mismo. El foco está en cómo se ve por dentro.",
+                  "v": "no admite un error ni con la prueba delante."
+                },
+                {
+                  "p": "Arrogante",
+                  "d": "exige el trato que cree merecer. El foco está en lo que reclama.",
+                  "v": "se molesta porque no le han consultado a él primero."
+                },
+                {
+                  "p": "Altivo",
+                  "d": "marca distancia hacia abajo. El foco está en la separación.",
+                  "v": "no se sienta en esa mesa."
+                },
+                {
+                  "p": "Altanero",
+                  "d": "mira por encima del hombro; altivo con desdén visible.",
+                  "v": "te contesta sin girar del todo la cabeza."
+                },
+                {
+                  "p": "Engreído",
+                  "d": "se recrea en sí mismo, encantado de conocerse.",
+                  "v": "cuenta la misma anécdota suya por tercera vez."
+                },
+                {
+                  "p": "Vanidoso",
+                  "d": "necesita ser admirado, sobre todo por su imagen.",
+                  "v": "mira si le has visto hacer lo que acaba de hacer."
+                },
+                {
+                  "p": "Presuntuoso",
+                  "d": "presume de lo que tiene o cree tener.",
+                  "v": "mete el precio de las cosas en la conversación."
+                },
+                {
+                  "p": "Fanfarrón",
+                  "d": "exagera o inventa méritos para impresionar.",
+                  "v": "todas sus anécdotas acaban con él quedando por encima."
+                },
+                {
+                  "p": "Petulante",
+                  "d": "exhibe con afectación y sin venir a cuento.",
+                  "v": "suelta el dato culto que no aporta nada al tema."
+                },
+                {
+                  "p": "Pedante",
+                  "d": "exhibe específicamente **saber**, para marcar nivel.",
+                  "v": "corrige tu terminología en vez de responder a tu pregunta."
+                },
+                {
+                  "p": "Prepotente",
+                  "d": "impone porque cree que puede.",
+                  "v": "zanja con \"esto se hace así y punto\"."
+                },
+                {
+                  "p": "Condescendiente",
+                  "d": "te trata como inferior **siendo amable**. Ahí está el veneno: la forma es correcta y el fondo te rebaja.",
+                  "v": "dice \"claro, tú no tienes por qué saberlo\" con buen tono."
+                },
+                {
+                  "p": "Paternalista",
+                  "d": "decide por tu bien sin pedirte permiso.",
+                  "v": "te oculta información \"para no preocuparte\"."
+                },
+                {
+                  "p": "Egocéntrico",
+                  "d": "todo lo refiere a sí mismo.",
+                  "v": "le cuentas un problema tuyo y acaba hablando del suyo."
+                },
+                {
+                  "p": "Ególatra",
+                  "d": "se adora abiertamente.",
+                  "v": "su conversación entera es su propia biografía."
+                },
+                {
+                  "p": "Narcisista",
+                  "d": "necesita admiración constante, se cree con derechos especiales y no registra el daño que hace. Es un **término clínico**: úsalo para el patrón completo y estable, no como sinónimo elegante de egoísta.",
+                  "v": "el patrón se repite durante años, en todos sus vínculos, y siempre acaba con el otro pidiendo perdón."
+                }
+              ]
+            },
+            {
+              "nombre": "el interés",
+              "entradas": [
+                {
+                  "p": "Egoísta",
+                  "d": "antepone lo suyo.",
+                  "v": "reparte de forma que a él le toque lo mejor, siempre."
+                },
+                {
+                  "p": "Interesado",
+                  "d": "se acerca en función de lo que puede sacar.",
+                  "v": "aparece justo cuando necesita algo y desaparece después."
+                },
+                {
+                  "p": "Utilitario",
+                  "d": "trata a las personas como medios.",
+                  "v": "clasifica a la gente por lo que le pueden resolver."
+                },
+                {
+                  "p": "Mercenario",
+                  "d": "solo se implica mientras cobra, y el cobro puede ser afectivo y no material.",
+                  "v": "su interés se apaga el día exacto en que deja de recibir."
+                },
+                {
+                  "p": "Oportunista",
+                  "d": "aprovecha la coyuntura sin compromiso previo.",
+                  "v": "se arrima al proyecto justo cuando empieza a salir bien."
+                },
+                {
+                  "p": "Ventajista",
+                  "d": "busca sacar más de lo que aporta.",
+                  "v": "siempre pone la parte más pequeña y cobra la más grande."
+                },
+                {
+                  "p": "Aprovechado",
+                  "d": "se instala en el esfuerzo ajeno.",
+                  "v": "nunca le toca pagar y siempre hay un motivo."
+                },
+                {
+                  "p": "Arribista",
+                  "d": "trepa socialmente sin escrúpulos sobre los medios.",
+                  "v": "cambia de amistades cada vez que sube de puesto."
+                },
+                {
+                  "p": "Calculador",
+                  "d": "mide constantemente coste y beneficio de cada relación.",
+                  "v": "su simpatía sube y baja según quién esté delante."
+                },
+                {
+                  "p": "Transaccional",
+                  "d": "entiende los vínculos como un intercambio con marcador.",
+                  "v": "te recuerda lo que hizo por ti cuando quiere algo."
+                },
+                {
+                  "p": "Mezquino",
+                  "d": "ruin en lo que da y en lo que reconoce. No es solo tacaño: es pequeño de espíritu.",
+                  "v": "le regatea el mérito a alguien que se lo ha ganado."
+                },
+                {
+                  "p": "Codicioso",
+                  "d": "quiere más, siempre.",
+                  "v": "gana lo que quería y al día siguiente ya quería otra cosa."
+                },
+                {
+                  "p": "Tacaño",
+                  "d": "le duele gastar.",
+                  "v": "calcula al céntimo su parte de la cuenta."
+                },
+                {
+                  "p": "Ingrato",
+                  "d": "no reconoce lo recibido.",
+                  "v": "le sacas de un apuro y a la semana ni se menciona."
+                }
+              ]
+            },
+            {
+              "nombre": "el engaño",
+              "entradas": [
+                {
+                  "p": "Mentiroso",
+                  "d": "falta a la verdad.",
+                  "v": "dos versiones suyas no encajan y no le importa."
+                },
+                {
+                  "p": "Embustero",
+                  "d": "miente por costumbre, incluso sin necesidad.",
+                  "v": "miente en cosas que no le aportan nada."
+                },
+                {
+                  "p": "Falso",
+                  "d": "muestra un afecto que no tiene.",
+                  "v": "te trata de maravilla y luego te destroza en cuanto sales."
+                },
+                {
+                  "p": "Hipócrita",
+                  "d": "exige a los demás lo que él no cumple.",
+                  "v": "critica exactamente lo que hizo el mes pasado."
+                },
+                {
+                  "p": "Farsante",
+                  "d": "sostiene un personaje entero que no es él.",
+                  "v": "descubres que su currículum no era ni parecido."
+                },
+                {
+                  "p": "Cínico",
+                  "d": "hace o dice lo indebido **sin ocultarlo y sin vergüenza**.",
+                  "v": "reconoce abiertamente que le da igual y se queda tan tranquilo."
+                },
+                {
+                  "p": "Desvergonzado",
+                  "d": "actúa mal sin pudor y sin molestarse en disimular.",
+                  "v": "le pillan en falta y se ríe."
+                },
+                {
+                  "p": "Adulador",
+                  "d": "halaga para obtener algo.",
+                  "v": "sus elogios llegan siempre unos minutos antes de la petición."
+                },
+                {
+                  "p": "Zalamero",
+                  "d": "halaga con empalago y familiaridad excesiva.",
+                  "v": "te toca el hombro y te llama \"campeón\"."
+                },
+                {
+                  "p": "Manipulador",
+                  "d": "orienta a otros hacia lo que él quiere sin que lo vean.",
+                  "v": "acabas haciendo algo que no querías y no sabes en qué momento decidiste."
+                },
+                {
+                  "p": "Taimado",
+                  "d": "astuto y disimulado; esconde lo que trama.",
+                  "v": "te enteras de sus movimientos cuando ya están hechos."
+                },
+                {
+                  "p": "Ladino",
+                  "d": "astuto para su provecho, con un punto de bajeza.",
+                  "v": "usa una cláusula que sabía que no habías leído."
+                },
+                {
+                  "p": "Retorcido",
+                  "d": "hace las cosas por caminos indirectos e innecesarios.",
+                  "v": "podía haberlo pedido y montó una situación para conseguirlo."
+                },
+                {
+                  "p": "Maquiavélico",
+                  "d": "usa a las personas como piezas dentro de una estrategia fría y sostenida.",
+                  "v": "enfrenta a dos personas y se queda con el resultado de ambas."
+                },
+                {
+                  "p": "Desleal",
+                  "d": "rompe el vínculo cuando le conviene.",
+                  "v": "cuenta lo que le confiaste a quien no debía."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 7,
+      "titulo": "Cómo se comporta en un conflicto",
+      "intro": "Una discusión de veinte minutos enseña más de una persona que seis meses de trato cordial. Aquí no describimos un rasgo nuevo: describimos dónde se hacen visibles todos los anteriores.",
+      "polos": [
+        {
+          "nombre": "Los cuatro estilos base",
+          "familias": [
+            {
+              "nombre": "General",
+              "entradas": [
+                {
+                  "p": "Asertivo",
+                  "d": "dice lo que quiere, con claridad, sin atacar al otro.",
+                  "v": "dice \"no me va bien y te propongo esto otro\", sin subir el tono ni pedir perdón."
+                },
+                {
+                  "p": "Agresivo",
+                  "d": "impone lo suyo pasando por encima del otro.",
+                  "v": "sube la voz, interrumpe y personaliza."
+                },
+                {
+                  "p": "Pasivo",
+                  "d": "no dice lo que quiere y traga.",
+                  "v": "acepta y luego se queja con un tercero."
+                },
+                {
+                  "p": "Pasivo-agresivo",
+                  "d": "no dice lo que quiere pero lo cobra por debajo.",
+                  "v": "dice \"tú haz lo que quieras\" y luego lo hace todo mal a propósito, o con retraso, o en silencio durante tres días."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "nombre": "Polo dialogante",
+          "familias": [
+            {
+              "nombre": "General",
+              "entradas": [
+                {
+                  "p": "Dialogante",
+                  "d": "busca entender antes de responder.",
+                  "v": "te repite tu argumento con sus palabras antes de rebatirlo."
+                },
+                {
+                  "p": "Receptivo",
+                  "d": "deja que le cambien de opinión.",
+                  "v": "dice \"no lo había visto así\" y de verdad se mueve."
+                },
+                {
+                  "p": "Conciliador",
+                  "d": "busca el terreno común.",
+                  "v": "propone el punto en el que ambos ganáis algo."
+                },
+                {
+                  "p": "Ecuánime en la discusión",
+                  "d": "aplica el mismo criterio a su error y al tuyo.",
+                  "v": "reconoce lo que le corresponde sin condicionarlo a que tú reconozcas lo tuyo."
+                },
+                {
+                  "p": "Vehemente",
+                  "d": "defiende con pasión e intensidad, pero argumentando.",
+                  "v": "se le enciende la voz y aun así todo lo que dice son razones."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "nombre": "Polo cerrado en banda",
+          "familias": [
+            {
+              "nombre": "no ceder",
+              "entradas": [
+                {
+                  "p": "Terco",
+                  "d": "se aferra a su postura.",
+                  "v": "repite el mismo argumento por cuarta vez, más alto."
+                },
+                {
+                  "p": "Testarudo / cabezota / tozudo",
+                  "d": "mismas ideas, registro coloquial y matiz de dureza.",
+                  "v": "lleva dos horas defendiendo algo que ya sabe que es mentira."
+                },
+                {
+                  "p": "Obstinado",
+                  "d": "persiste con voluntad firme. Es el término neutro del grupo: puede ser vicio o virtud según el objeto.",
+                  "v": "insiste tres años hasta conseguir lo que quería."
+                },
+                {
+                  "p": "Contumaz",
+                  "d": "reincide en el mismo error o en la misma postura pese a todo.",
+                  "v": "le ha salido mal cuatro veces y va a por la quinta igual."
+                },
+                {
+                  "p": "Porfiado",
+                  "d": "discute sin parar, por discutir.",
+                  "v": "le das la razón y sigue argumentando."
+                }
+              ]
+            },
+            {
+              "nombre": "distorsionar",
+              "entradas": [
+                {
+                  "p": "Tergiversador",
+                  "d": "toma hechos reales y les cambia el orden, el contexto o el énfasis.",
+                  "v": "cuenta lo que pasó y todo es verdad salvo el significado."
+                },
+                {
+                  "p": "Negacionista",
+                  "d": "niega hechos que ocurrieron.",
+                  "v": "dice \"yo eso no lo he dicho nunca\" sobre algo de hace dos días."
+                },
+                {
+                  "p": "Fabulador",
+                  "d": "construye una narración paralela y se la cree.",
+                  "v": "su versión tiene detalles que no existieron."
+                },
+                {
+                  "p": "Proyectivo",
+                  "d": "te acusa exactamente de lo que él está haciendo.",
+                  "v": "te dice que estás cambiando la versión mientras la cambia."
+                },
+                {
+                  "p": "Evasivo",
+                  "d": "desvía en lugar de responder.",
+                  "v": "preguntas por A y te responde con tus fallos en B."
+                },
+                {
+                  "p": "Escurridizo",
+                  "d": "nunca acaba de comprometerse con una posición.",
+                  "v": "después de una hora no sabrías decir qué opina."
+                }
+              ]
+            },
+            {
+              "nombre": "herir para ganar",
+              "entradas": [
+                {
+                  "p": "Beligerante",
+                  "d": "entra a la discusión como a una guerra.",
+                  "v": "su primera frase ya es un ataque."
+                },
+                {
+                  "p": "Descalificador",
+                  "d": "ataca a la persona en lugar del argumento.",
+                  "v": "responde con \"es que tú siempre igual\" en vez de con una razón."
+                },
+                {
+                  "p": "Despreciativo",
+                  "d": "trata al otro como no merecedor de la discusión. En los datos de investigación sobre parejas, esta es la conducta que peor pronóstico tiene de todas.",
+                  "v": "pone los ojos en blanco mientras hablas."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "confusiones": [
+    {
+      "a": "Introvertido",
+      "b": "tímido",
+      "dif": "El introvertido no necesita el trato. El tímido lo quiere y le da apuro."
+    },
+    {
+      "a": "Asertivo",
+      "b": "agresivo",
+      "dif": "El asertivo defiende lo suyo. El agresivo, además, pasa por encima de ti."
+    },
+    {
+      "a": "Sincero",
+      "b": "faltón",
+      "dif": "El sincero dice la verdad. El faltón usa la verdad como excusa para faltar."
+    },
+    {
+      "a": "Empático",
+      "b": "complaciente",
+      "dif": "El empático capta lo que sientes. El complaciente cede para que no te enfades. Se puede ser lo primero sin lo segundo."
+    },
+    {
+      "a": "Humilde",
+      "b": "inseguro",
+      "dif": "El humilde sabe lo que vale y no lo exhibe. El inseguro no sabe lo que vale."
+    },
+    {
+      "a": "Seguro de sí",
+      "b": "soberbio",
+      "dif": "El seguro confía en su criterio. El soberbio necesita que el tuyo valga menos."
+    },
+    {
+      "a": "Prudente",
+      "b": "cobarde",
+      "dif": "El prudente mide el riesgo. El cobarde lo evita aunque haya que asumirlo."
+    },
+    {
+      "a": "Tenaz",
+      "b": "obstinado",
+      "dif": "El tenaz insiste en el objetivo. El obstinado insiste en el método."
+    },
+    {
+      "a": "Disciplinado",
+      "b": "rígido",
+      "dif": "El disciplinado cumple el plan. El rígido no lo cambia aunque el plan ya no valga."
+    },
+    {
+      "a": "Meticuloso",
+      "b": "puntilloso",
+      "dif": "El meticuloso cuida lo que importa. El puntilloso se detiene en lo que no."
+    },
+    {
+      "a": "Sensible",
+      "b": "susceptible",
+      "dif": "El sensible percibe mucho. El susceptible se ofende con poco."
+    },
+    {
+      "a": "Tranquilo",
+      "b": "pasivo",
+      "dif": "El tranquilo no se altera. El pasivo no actúa."
+    },
+    {
+      "a": "Reservado",
+      "b": "hermético",
+      "dif": "El reservado elige qué cuenta. El hermético no cuenta nada."
+    },
+    {
+      "a": "Discreto",
+      "b": "frío",
+      "dif": "El discreto guarda. El frío no siente (o no lo muestra nunca)."
+    },
+    {
+      "a": "Ambicioso",
+      "b": "interesado",
+      "dif": "El ambicioso quiere llegar lejos. El interesado quiere llegar a tu costa."
+    },
+    {
+      "a": "Ingenuo",
+      "b": "tonto",
+      "dif": "El ingenuo no busca la malicia. El tonto no la entiende."
+    },
+    {
+      "a": "Generoso",
+      "b": "derrochador",
+      "dif": "El generoso da a otros. El derrochador gasta en sí mismo sin medida."
+    },
+    {
+      "a": "Irónico",
+      "b": "sarcástico",
+      "dif": "La ironía es un recurso. El sarcasmo es un arma."
+    },
+    {
+      "a": "Exigente",
+      "b": "intransigente",
+      "dif": "El exigente pide mucho. El intransigente no acepta menos, jamás, de nadie."
+    },
+    {
+      "a": "Perfeccionista",
+      "b": "excelente",
+      "dif": "El perfeccionista no entrega. El excelente entrega bien."
+    },
+    {
+      "a": "Frío",
+      "b": "sereno",
+      "dif": "El frío no se conmueve. El sereno se conmueve y sostiene."
+    },
+    {
+      "a": "Egoísta",
+      "b": "narcisista",
+      "dif": "El egoísta antepone lo suyo. El narcisista necesita además que le admires y no registra tu daño."
+    },
+    {
+      "a": "Cínico",
+      "b": "hipócrita",
+      "dif": "El cínico hace el mal y lo reconoce. El hipócrita lo hace y predica lo contrario."
+    },
+    {
+      "a": "Culto",
+      "b": "pedante",
+      "dif": "El culto sabe. El pedante necesita que sepas que sabe."
+    }
+  ],
+  "inverso": [
+    {
+      "busca": "Habla mucho",
+      "candidatos": "locuaz → parlanchín → verborreico"
+    },
+    {
+      "busca": "No comparte nada suyo",
+      "candidatos": "reservado → hermético"
+    },
+    {
+      "busca": "Evita a la gente",
+      "candidatos": "retraído → esquivo → huraño"
+    },
+    {
+      "busca": "Se cree superior",
+      "candidatos": "vanidoso → engreído → soberbio → arrogante"
+    },
+    {
+      "busca": "Te trata como inferior siendo amable",
+      "candidatos": "condescendiente → paternalista"
+    },
+    {
+      "busca": "Presume",
+      "candidatos": "presuntuoso → petulante → fanfarrón"
+    },
+    {
+      "busca": "Presume de saber",
+      "candidatos": "pedante → petulante"
+    },
+    {
+      "busca": "Manda sin autoridad",
+      "candidatos": "mandón → prepotente"
+    },
+    {
+      "busca": "Se ofende con nada",
+      "candidatos": "susceptible → quisquilloso"
+    },
+    {
+      "busca": "Salta enseguida",
+      "candidatos": "irritable → irascible → explosivo"
+    },
+    {
+      "busca": "Guarda la ofensa",
+      "candidatos": "rencoroso → resentido → vengativo"
+    },
+    {
+      "busca": "No cede nunca",
+      "candidatos": "terco → obstinado → intransigente → contumaz"
+    },
+    {
+      "busca": "No escucha nada nuevo",
+      "candidatos": "convencional → dogmático → obcecado → cerril"
+    },
+    {
+      "busca": "Se cree cualquier cosa",
+      "candidatos": "crédulo → ingenuo → cándido"
+    },
+    {
+      "busca": "No cumple lo que dice",
+      "candidatos": "informal → inconstante → negligente"
+    },
+    {
+      "busca": "Hace las cosas mal y rápido",
+      "candidatos": "descuidado → chapucero → negligente"
+    },
+    {
+      "busca": "Evita el esfuerzo",
+      "candidatos": "acomodado → perezoso → indolente"
+    },
+    {
+      "busca": "Va a lo suyo",
+      "candidatos": "interesado → egoísta → utilitario → mercenario"
+    },
+    {
+      "busca": "Se arrima cuando le conviene",
+      "candidatos": "oportunista → ventajista → aprovechado"
+    },
+    {
+      "busca": "Usa a la gente con estrategia",
+      "candidatos": "calculador → maquiavélico"
+    },
+    {
+      "busca": "Consigue cosas sin que lo veas",
+      "candidatos": "manipulador → taimado → ladino"
+    },
+    {
+      "busca": "Finge afecto",
+      "candidatos": "falso → farsante → adulador"
+    },
+    {
+      "busca": "Predica lo que no cumple",
+      "candidatos": "hipócrita"
+    },
+    {
+      "busca": "Hace el mal sin disimulo",
+      "candidatos": "cínico → desvergonzado"
+    },
+    {
+      "busca": "Da y no espera nada",
+      "candidatos": "desprendido → generoso → altruista → magnánimo"
+    },
+    {
+      "busca": "No se altera",
+      "candidatos": "sereno → templado → imperturbable → estoico"
+    },
+    {
+      "busca": "Se recupera de los golpes",
+      "candidatos": "entero → resiliente → curtido"
+    },
+    {
+      "busca": "Ve lo que otros no ven",
+      "candidatos": "agudo → perspicaz → sagaz"
+    },
+    {
+      "busca": "No se conforma con lo establecido",
+      "candidatos": "inconformista → heterodoxo"
+    },
+    {
+      "busca": "Cumple siempre",
+      "candidatos": "formal → cumplidor → fiable"
+    },
+    {
+      "busca": "Cuida el detalle",
+      "candidatos": "meticuloso → minucioso → escrupuloso"
+    },
+    {
+      "busca": "Aguanta sin soltar",
+      "candidatos": "constante → tenaz → perseverante"
+    },
+    {
+      "busca": "Se pliega siempre",
+      "candidatos": "complaciente → sumiso → servil"
+    },
+    {
+      "busca": "No sostiene lo suyo",
+      "candidatos": "pusilánime → apocado"
+    },
+    {
+      "busca": "Se hace la víctima",
+      "candidatos": "victimista"
+    },
+    {
+      "busca": "Se cobra las cosas por debajo",
+      "candidatos": "pasivo-agresivo"
+    },
+    {
+      "busca": "Cambia la versión de lo ocurrido",
+      "candidatos": "tergiversador → negacionista → fabulador"
+    },
+    {
+      "busca": "Contesta con desgana",
+      "candidatos": "displicente → despectivo"
+    },
+    {
+      "busca": "Es amable con todos sin distancias",
+      "candidatos": "llano → campechano → accesible"
+    }
+  ],
+  "checklist": [
+    {
+      "q": "¿Cuánta gente necesita y cuánto espacio ocupa?",
+      "opciones": "EP. 1: expansivo / avasallador / sociable / reservado / introvertido / huraño"
+    },
+    {
+      "q": "¿Cómo trata a quien no le sirve para nada?",
+      "opciones": "EP. 2: cálido / considerado / correcto / seco / displicente / despectivo"
+    },
+    {
+      "q": "¿Se puede contar con él?",
+      "opciones": "EP. 3: fiable / cumplidor / metódico / disperso / informal / negligente"
+    },
+    {
+      "q": "¿Qué hace cuando algo sale mal?",
+      "opciones": "EP. 4: sereno / entero / se tensa / se hunde / explota"
+    },
+    {
+      "q": "¿Cambia de opinión alguna vez?",
+      "opciones": "EP. 5 y EP. 7: receptivo / reflexivo / convencional / dogmático / obcecado"
+    },
+    {
+      "q": "¿Va de frente?",
+      "opciones": "EP. 6: íntegro / franco / reservado / calculador / manipulador"
+    }
+  ],
+  "total": 278
+}
