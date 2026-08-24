@@ -3,6 +3,7 @@ import { render, screen, fireEvent, act, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
 import { App } from '../src/main.jsx';
 import * as vault from '../src/lib/vault.js';
+import lexico from '../src/data/lexico.json';
 
 async function entrar(u) {
   render(<App />);
@@ -412,12 +413,19 @@ describe('Registrar (los cinco tipos)', () => {
     const campo = screen.getByPlaceholderText('Añadir otro adjetivo a mano');
     expect(campo).toHaveAttribute('list', 'lexico-adjetivos');
     expect(document.getElementById('lexico-adjetivos').tagName).toBe('DATALIST');
-    // 278 entradas en el léxico, pero dos palabras están en dos familias a la
-    // vez (Asertivo, Conciliador): el desplegable no debe repetirlas.
+
+    // Palabras únicas del léxico (algunas, como "Asertivo", están en dos
+    // familias a la vez): el desplegable no debe repetirlas.
+    const palabrasUnicas = new Set();
+    for (const dim of lexico.dims) {
+      for (const polo of dim.polos) for (const fam of polo.familias) for (const e of fam.entradas) palabrasUnicas.add(e.p);
+    }
+
     const opciones = [...document.querySelectorAll('#lexico-adjetivos option')].map((o) => o.value);
-    expect(opciones).toHaveLength(276);
-    expect(new Set(opciones).size).toBe(276);
+    expect(opciones).toHaveLength(palabrasUnicas.size);
+    expect(new Set(opciones).size).toBe(palabrasUnicas.size);
     expect(opciones).toContain('Asertivo');
+    expect(opciones).toContain('Sensato');
   });
 
   it('registra una autoobservación (bien o mal) y alimenta el apartado "Yo"', async () => {

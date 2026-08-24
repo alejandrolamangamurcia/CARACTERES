@@ -1207,6 +1207,11 @@
                   "v": "todo el mundo que le conoce dice exactamente lo mismo de él."
                 },
                 {
+                  "p": "Sensato",
+                  "d": "toma decisiones razonables; ni exagera ni se deja llevar por el impulso del momento.",
+                  "v": "cuando todos se alteran por una tontería, es quien dice «pensemos esto con calma» — y acierta."
+                },
+                {
                   "p": "Decente",
                   "d": "cumple lo mínimo que se le debe a los demás.",
                   "v": "avisa al vecino antes de empezar la obra."
@@ -2001,5 +2006,5 @@
       "opciones": "EP. 6: íntegro / franco / reservado / calculador / manipulador"
     }
   ],
-  "total": 278
+  "total": 279
 }

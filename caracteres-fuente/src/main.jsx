@@ -46,7 +46,7 @@ function todasLasPalabras() {
   return palabrasLexico;
 }
 
-/** Un <datalist> compartido con los 278 adjetivos, para que los campos de "añadir a
+/** Un <datalist> compartido con los adjetivos del léxico, para que los campos de "añadir a
  *  mano" propongan la lista según se escribe y no se cuelen erratas que rompan
  *  el cruce de datos. id fijo: cualquier <input list="lexico-adjetivos"> lo usa. */
 function DatalistLexico() {

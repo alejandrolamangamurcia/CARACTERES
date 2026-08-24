@@ -4,9 +4,15 @@ import * as S from '../src/lib/estudio.js';
 
 const mazo = S.construirMazo(lexico);
 
+const contarEntradasDelLexico = () => {
+  let n = 0;
+  for (const dim of lexico.dims) for (const polo of dim.polos) for (const fam of polo.familias) n += fam.entradas.length;
+  return n;
+};
+
 describe('el mazo sale del léxico real', () => {
-  it('tiene los 278 adjetivos', () => {
-    expect(mazo).toHaveLength(278);
+  it('tiene una tarjeta por cada entrada del léxico', () => {
+    expect(mazo).toHaveLength(contarEntradasDelLexico());
   });
 
   it('cada tarjeta trae categoría, familia y situación', () => {
@@ -85,9 +91,9 @@ describe('repetición espaciada', () => {
     let p = {};
     for (let i = 0; i < 5; i++) p = S.responder(p, mazo[i].id, i % 2 === 0, '2026-08-23');
     const r = S.resumenEstudio(mazo, p, '2026-08-23');
-    expect(r.total).toBe(278);
+    expect(r.total).toBe(mazo.length);
     expect(r.empezadas).toBe(5);
-    expect(r.sinVer).toBe(273);
+    expect(r.sinVer).toBe(mazo.length - 5);
     expect(r.acierto).toBeCloseTo(3 / 5);
   });
 
