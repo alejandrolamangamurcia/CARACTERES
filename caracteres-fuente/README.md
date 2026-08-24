@@ -21,6 +21,7 @@ Lo que se sube a GitHub Pages es **dist/index.html** más **sw.js**.
     src/lib/perfil.js         el perfil "Yo" y sus cuatro apartados
     src/lib/estadisticas.js   consenso, punto ciego, patrones de roce
     src/lib/estudio.js        repetición espaciada sobre el léxico
+    src/lib/ia.js             sugerencia de adjetivos por IA al registrar
     src/main.jsx              arranque y pantallas
     src/estilos.css           diseño
     src/cabecera.html         plantilla HTML (manifiesto, iconos, arranque)

@@ -48,6 +48,16 @@ describe('caja fuerte', () => {
   it('no deja guardar con la caja cerrada', async () => {
     await expect(v.guardar('entries', [])).rejects.toThrow();
   });
+
+  it('expone la clave y la sal actuales solo mientras está abierta', async () => {
+    expect(v.claveActual()).toBeNull();
+    expect(v.salActual()).toBeNull();
+    await v.crear('4821');
+    expect(v.claveActual()).not.toBeNull();
+    expect(v.salActual()).toBeInstanceOf(Uint8Array);
+    v.cerrar();
+    expect(v.claveActual()).toBeNull();
+  });
 });
 
 describe('copias de seguridad', () => {

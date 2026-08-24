@@ -30,7 +30,7 @@ describe('arranque de la app', () => {
     await u.type(screen.getByLabelText('PIN'), '4821');
     await u.type(screen.getByLabelText('Repítelo'), '4821');
     await u.click(screen.getByRole('button', { name: /Crear y entrar/ }));
-    expect(await screen.findByText('Caja abierta')).toBeInTheDocument();
+    expect(await screen.findByText('Me dijeron')).toBeInTheDocument();
   });
 
   it('si ya hay caja, pide abrir en vez de crear', async () => {
@@ -58,7 +58,7 @@ describe('arranque de la app', () => {
     await u.type(screen.getByLabelText('PIN'), '4821');
     await u.type(screen.getByLabelText('Repítelo'), '4821');
     await u.click(screen.getByRole('button', { name: /Crear y entrar/ }));
-    await screen.findByText('Caja abierta');
+    await screen.findByText('Me dijeron');
 
     await vault.guardar('entries', [{ id: '1', tipo: 'roce' }, { id: '2', tipo: 'acierto' }]);
     await u.click(screen.getByRole('button', { name: 'Bloquear' }));

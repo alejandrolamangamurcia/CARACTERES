@@ -48,4 +48,4 @@
 .crx .bmd h3{margin:0 0 8px;font-size:18px;color:var(--amb)}
 .crx .bmd p{margin:0 0 16px;font-size:13.5px;color:var(--tx2);line-height:1.5}
 .crx .bmd .n{font-size:34px;font-weight:700;color:var(--tx);display:block;margin:4px 0 10px}
-`;function V({on:e,cls:a="",onClick:t,children:o}){return(0,l.jsx)("span",{className:
+

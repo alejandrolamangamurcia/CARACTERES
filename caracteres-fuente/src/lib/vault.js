@@ -57,6 +57,10 @@ export const estaAbierta = () => clave !== null;
 export const leer = () => datos;
 export const cerrar = () => { clave = null; sal = null; datos = datosVacios(); };
 
+// Para las copias de seguridad (backup.js necesita cifrar con la misma clave).
+export const claveActual = () => clave;
+export const salActual = () => sal;
+
 export const hayVault = () => localStorage.getItem(CLAVE_ALMACEN) !== null;
 
 async function volcar() {
