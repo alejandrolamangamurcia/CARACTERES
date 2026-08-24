@@ -129,6 +129,48 @@ export function quitarDelIdeal(people, palabra) {
   }));
 }
 
+// --- Autoobservación: lo que tú mismo notas de tus actos, bien o mal --------
+//
+// Un acto concreto que hiciste, no cómo te ves — por eso sí cuenta como
+// evidencia, igual que "lo que me dicen". Se separa en "bien" y "mal" para
+// poder buscar más de lo primero y trabajar lo segundo.
+
+/**
+ * Adjetivos que salen de tus propias entradas de "Autoobservación", separados
+ * en "bien" y "mal" según cómo te hizo sentir. Ordenados por frecuencia.
+ */
+export function autoobservacionDeYo(entries = []) {
+  const cubos = new Map();
+
+  for (const e of entries) {
+    if (e.tipo !== 'autoobservacion') continue;
+    const sentir = e.sentir === 'mal' ? 'mal' : 'bien';
+    for (const adj of e.adjetivos || []) {
+      const llave = `${sentir}|${norm(adj)}`;
+      if (!cubos.has(llave)) cubos.set(llave, { palabra: adj, sentir, testimonios: [] });
+      cubos.get(llave).testimonios.push({
+        entryId: e.id,
+        frase: e.frase || '',
+        cuando: e.fechaEvento || e.ts,
+      });
+    }
+  }
+
+  const salida = [...cubos.values()].map((c) => ({
+    palabra: c.palabra,
+    sentir: c.sentir,
+    veces: c.testimonios.length,
+    testimonios: c.testimonios.sort((a, b) => String(b.cuando).localeCompare(String(a.cuando))),
+  }));
+
+  const ordenar = (a, b) => b.veces - a.veces || a.palabra.localeCompare(b.palabra);
+
+  return {
+    bien: salida.filter((x) => x.sentir === 'bien').sort(ordenar),
+    mal: salida.filter((x) => x.sentir === 'mal').sort(ordenar),
+  };
+}
+
 // --- La ficha de cada persona: igual que "lo que me dicen", pero de ellos --
 //
 // Misma regla que gobierna "Yo": no se escribe el adjetivo a mano, se

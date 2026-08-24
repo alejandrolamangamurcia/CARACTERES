@@ -378,6 +378,74 @@ describe('Registrar (los cinco tipos)', () => {
     expect(screen.getByText('Puntual')).toBeInTheDocument();
   });
 
+  it('al pedir sugerencias en "Me dijeron", le dice a la IA que es un testimonio de un tercero sobre el usuario', async () => {
+    const u = userEvent.setup();
+    const fetchEspia = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        content: [{ type: 'text', text: JSON.stringify({ candidatos: [], aviso_estado: null }) }],
+      }),
+    });
+    vi.stubGlobal('fetch', fetchEspia);
+
+    await entrar(u);
+    await irAMas(u, 'Ajustes');
+    await u.type(screen.getByLabelText(/Clave de Anthropic/), 'sk-ant-prueba');
+    await u.click(screen.getByRole('button', { name: 'Guardar clave' }));
+    await screen.findByText('Guardada.');
+
+    await u.click(screen.getByRole('button', { name: 'Registrar' }));
+    await u.type(screen.getByLabelText('Lo que te dijeron'), 'que yo era una persona muy sensata');
+    await u.click(screen.getByRole('button', { name: 'Sugerir adjetivos' }));
+
+    await waitFor(() => expect(fetchEspia).toHaveBeenCalled());
+    const enviado = JSON.parse(fetchEspia.mock.calls[0][1].body).messages[0].content;
+    expect(enviado).toMatch(/^CONTEXTO: .*tercero.*al usuario/);
+    expect(enviado).toMatch(/NO es una autodescripción/);
+    expect(enviado).toContain('Conducta: que yo era una persona muy sensata');
+  });
+
+  it('el campo de adjetivo a mano tiene la lista del léxico como sugerencia', async () => {
+    const u = userEvent.setup();
+    await entrar(u);
+    const campo = screen.getByPlaceholderText('Añadir otro adjetivo a mano');
+    expect(campo).toHaveAttribute('list', 'lexico-adjetivos');
+    expect(document.getElementById('lexico-adjetivos').tagName).toBe('DATALIST');
+    // 278 entradas en el léxico, pero dos palabras están en dos familias a la
+    // vez (Asertivo, Conciliador): el desplegable no debe repetirlas.
+    const opciones = [...document.querySelectorAll('#lexico-adjetivos option')].map((o) => o.value);
+    expect(opciones).toHaveLength(276);
+    expect(new Set(opciones).size).toBe(276);
+    expect(opciones).toContain('Asertivo');
+  });
+
+  it('registra una autoobservación (bien o mal) y alimenta el apartado "Yo"', async () => {
+    const u = userEvent.setup();
+    await entrar(u);
+    await u.click(screen.getByRole('button', { name: 'Autoobservación' }));
+
+    await u.click(screen.getByRole('button', { name: 'Mal' }));
+    await u.type(
+      screen.getByLabelText('Qué hiciste'),
+      'Dejé para última hora un trabajo importante y lo perdí',
+    );
+    await u.type(screen.getByPlaceholderText('Añadir otro adjetivo a mano'), 'Procrastinador');
+    await u.click(screen.getByRole('button', { name: 'Añadir adjetivo' }));
+    await u.click(screen.getByRole('button', { name: 'Guardar entrada' }));
+    await screen.findByText('Guardada.');
+
+    // Aparece marcado como "Mal" en Entradas.
+    await u.click(screen.getByRole('button', { name: 'Entradas' }));
+    expect(screen.getByText(/Dejé para última hora/)).toBeInTheDocument();
+    expect(screen.getByText('Mal')).toBeInTheDocument();
+
+    // Y alimenta "Yo".
+    await u.click(screen.getByRole('button', { name: 'Personas' }));
+    expect(screen.getByText('Lo que observas de ti (mal)')).toBeInTheDocument();
+    expect(screen.getByText('Procrastinador')).toBeInTheDocument();
+  });
+
   it('registra un plan si→entonces y se puede marcar como cumplido desde Entradas', async () => {
     const u = userEvent.setup();
     await entrar(u);
@@ -522,7 +590,7 @@ describe('la ficha de cada persona', () => {
     await u.type(screen.getByLabelText('Añadir algo nuevo'), 'No dio su brazo a torcer');
     await u.click(screen.getByRole('button', { name: 'Guardar' }));
     await screen.findByText('Guardada.');
-    expect(screen.getAllByText('Todavía no hay nada registrado.')).toHaveLength(2);
+    expect(screen.getAllByText('Todavía no hay nada registrado.')).toHaveLength(4);
   });
 
   it('registrar un gesto (no una frase textual) también saca adjetivos y queda marcado como tal', async () => {
@@ -605,7 +673,7 @@ describe('la ficha de cada persona', () => {
     // Quitarle el adjetivo la deja sin ninguno.
     await u.click(screen.getByText('Tozudo ✕'));
     expect(screen.queryByText('Tozudo ✕')).toBeNull();
-    expect(screen.getAllByText('Todavía no hay nada registrado.')).toHaveLength(2);
+    expect(screen.getAllByText('Todavía no hay nada registrado.')).toHaveLength(4);
 
     // Borrarla la saca del todo.
     await u.click(screen.getByRole('button', { name: 'Borrar entrada' }));
@@ -667,7 +735,8 @@ describe('la ficha de cada persona', () => {
     const [, opts] = fetchEspia.mock.calls[0];
     const enviado = JSON.parse(opts.body).messages[0].content;
     expect(enviado).toBe(
-      '[id-frase-1] La confundió con su ex en la fiesta\n[id-frase-2] Otra vez la llamó por el nombre de su ex',
+      'CONTEXTO: Estas frases describen la conducta de Luis (no la del usuario).\n'
+      + '[id-frase-1] La confundió con su ex en la fiesta\n[id-frase-2] Otra vez la llamó por el nombre de su ex',
     );
 
     await u.click(screen.getByRole('button', { name: 'Confirmar Despistado' }));

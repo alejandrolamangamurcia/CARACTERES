@@ -103,6 +103,37 @@ describe('mis apartados y mi ideal', () => {
   });
 });
 
+describe('autoobservación: lo que noto de mis propios actos', () => {
+  const auto = (id, sentir, adjetivos, frase, cuando) => ({
+    id, tipo: 'autoobservacion', sentir, adjetivos, frase, fechaEvento: cuando,
+  });
+
+  it('separa lo que te hace sentir bien de lo que te hace sentir mal', () => {
+    const entries = [
+      auto('1', 'mal', ['Procrastinador'], 'perdí el trabajo por dejarlo para última hora', '2026-08-01'),
+      auto('2', 'bien', ['Generoso'], 'ayudé sin que me lo pidieran', '2026-08-02'),
+    ];
+    const r = P.autoobservacionDeYo(entries);
+    expect(r.mal.map((x) => x.palabra)).toEqual(['Procrastinador']);
+    expect(r.bien.map((x) => x.palabra)).toEqual(['Generoso']);
+  });
+
+  it('agrupa por frecuencia dentro de cada bloque', () => {
+    const entries = [
+      auto('1', 'mal', ['Procrastinador'], 'x', '2026-08-01'),
+      auto('2', 'mal', ['Procrastinador'], 'y', '2026-08-02'),
+      auto('3', 'mal', ['Disperso'], 'z', '2026-08-03'),
+    ];
+    const r = P.autoobservacionDeYo(entries);
+    expect(r.mal[0]).toMatchObject({ palabra: 'Procrastinador', veces: 2 });
+  });
+
+  it('ignora entradas de otro tipo', () => {
+    const entries = [{ id: '1', tipo: 'observacion', sentir: 'mal', adjetivos: ['Tozudo'], conQuien: 'p1' }];
+    expect(P.autoobservacionDeYo(entries)).toEqual({ bien: [], mal: [] });
+  });
+});
+
 describe('la ficha de una persona (a partir de sus "Observación")', () => {
   const obs = (id, quien, adjetivos, frase, cuando, contexto = 'En calma') => ({
     id, tipo: 'observacion', conQuien: quien, adjetivos, frase, fechaEvento: cuando, contextoFrase: contexto,

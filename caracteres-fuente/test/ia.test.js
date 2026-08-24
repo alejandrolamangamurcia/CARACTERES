@@ -34,6 +34,18 @@ describe('sugerirAdjetivos', () => {
     expect(body.messages[0].content).toBe('Conducta: se puso a hablar con todos');
   });
 
+  it('con marco, antepone el CONTEXTO a la conducta', async () => {
+    const fetchEspia = vi.fn().mockResolvedValue(respuestaOk([]));
+    vi.stubGlobal('fetch', fetchEspia);
+
+    await sugerirAdjetivos('k', 'que yo era muy sensata', 'Un tercero se lo dijo al usuario, sobre el usuario');
+
+    const body = JSON.parse(fetchEspia.mock.calls[0][1].body);
+    expect(body.messages[0].content).toBe(
+      'CONTEXTO: Un tercero se lo dijo al usuario, sobre el usuario\nConducta: que yo era muy sensata',
+    );
+  });
+
   it('quita las marcas de bloque de código si la IA las incluye', async () => {
     const fetchEspia = vi.fn().mockResolvedValue({
       ok: true, status: 200,
@@ -94,5 +106,15 @@ describe('buscarPatrones', () => {
     vi.stubGlobal('fetch', fetchEspia);
     await expect(buscarPatrones('', [{ id: 'a', texto: 'x' }])).rejects.toThrow(/clave/i);
     expect(fetchEspia).not.toHaveBeenCalled();
+  });
+
+  it('con marco, antepone el CONTEXTO a las frases', async () => {
+    const fetchEspia = vi.fn().mockResolvedValue(respuestaPatrones([]));
+    vi.stubGlobal('fetch', fetchEspia);
+
+    await buscarPatrones('k', [{ id: 'a', texto: 'x' }], 'Frases de Luis, no del usuario');
+
+    const body = JSON.parse(fetchEspia.mock.calls[0][1].body);
+    expect(body.messages[0].content).toBe('CONTEXTO: Frases de Luis, no del usuario\n[a] x');
   });
 });

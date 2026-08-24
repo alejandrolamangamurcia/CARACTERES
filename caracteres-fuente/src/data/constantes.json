@@ -33,6 +33,10 @@
       "l": "Acierto",
       "c": "var(--ok)"
     },
+    "autoobservacion": {
+      "l": "Autoobservación",
+      "c": "var(--tx2)"
+    },
     "plan": {
       "l": "Plan si→entonces",
       "c": "var(--amb)"
@@ -70,6 +74,30 @@
     {
       "t": "Tus rasgos, salidos de tus actos",
       "d": "Los adjetivos que tu propia conducta sostiene, no los que crees tener. Es el vocabulario aplicado a ti, y era la pregunta con la que empezó todo esto."
+    },
+    {
+      "t": "Cuándo usar «Me dijeron»",
+      "d": "Alguien te dice algo sobre ti, directamente o contándotelo de un tercero. Ejemplo: «Mi hermana me dijo que soy demasiado cabezota cuando discuto». No lo uses para algo que tú mismo pienses de ti: para eso está Autoobservación."
+    },
+    {
+      "t": "Cuándo usar «Roce»",
+      "d": "Hay fricción, discusión o tensión con alguien. Ejemplo: «Discutimos por los planes del sábado y acabé levantando la voz». Anota con quién, sobre qué, y cómo respondiste."
+    },
+    {
+      "t": "Cuándo usar «Observación»",
+      "d": "Ves a alguien hacer o decir algo, sin que haya roce de por medio ni te lo digan sobre ti. Ejemplo: «Se ofreció a quedarse hasta tarde ayudando a un compañero sin que se lo pidieran». Es la base de la ficha de cada persona."
+    },
+    {
+      "t": "Cuándo usar «Acierto»",
+      "d": "Algo sale bien, tuyo o de otra persona. Ejemplo: «Mantuve la calma en una discusión que normalmente me hubiera hecho explotar». El panel de estadísticas necesita estos aciertos para no enseñarte solo defectos."
+    },
+    {
+      "t": "Cuándo usar «Autoobservación»",
+      "d": "Algo que TÚ hiciste — no cómo te ves, sino un acto concreto — y que te hizo sentir bien o mal contigo mismo. Ejemplo: «Dejé para última hora un trabajo importante y lo perdí por procrastinar» → Procrastinador. Estos adjetivos alimentan tu propio apartado «Yo»."
+    },
+    {
+      "t": "Cuándo usar «Plan si→entonces»",
+      "d": "Dejas preparada una respuesta a algo que sabes que va a volver a pasar. Ejemplo: «Si vuelve a cancelar sin avisar, entonces le propondré quedar con más margen». Luego, desde Entradas, marcas si se cumplió o no."
     }
   ]
 }

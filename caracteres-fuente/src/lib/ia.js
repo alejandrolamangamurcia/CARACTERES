@@ -69,23 +69,28 @@ async function llamarClaude(clave, sistema, mensaje) {
 }
 
 const SISTEMA_SUGERIR = `Eres el motor de consulta de un léxico español de rasgos de personalidad. Tu ÚNICA salida es JSON válido, sin marcas de código.
-Dada una conducta descrita, elige de la LISTA los 3 a 5 adjetivos que mejor la describen. Palabras EXACTAS de la lista.
-Un momento no es un rasgo: si la conducta puede explicarse por un estado transitorio, dilo en "aviso_estado"; si no, null.
+Antes de la conducta recibirás una línea "CONTEXTO:" que dice de dónde sale la frase — quién es el sujeto real de la conducta y si es un testimonio de un tercero, una observación directa, o una autoobservación de conducta concreta. Léela con atención: una frase en primera persona ("me dijo que yo era...") puede describir a QUIEN LA REGISTRA relatando lo que otro dijo de él, no una autodescripción suya. El CONTEXTO te dice cuál es el caso; no lo asumas por la gramática de la frase sola.
+Dada la conducta descrita, elige de la LISTA los 3 a 5 adjetivos que mejor la describen. Palabras EXACTAS de la lista.
+Un momento no es un rasgo: si la conducta puede explicarse por un estado transitorio, dilo en "aviso_estado"; si no, null. Una autopercepción abstracta sin conducta detrás tampoco es un rasgo — pero una autoobservación de un ACTO concreto (algo que la persona hizo, no cómo se ve a sí misma) sí es evidencia válida, igual que un testimonio de un tercero.
 Formato: {"candidatos":[{"palabra":"...","razon":"...","confianza":"alta|media|baja"}],"aviso_estado":null}
 LISTA:
 ${listaLexico()}`;
 
 /**
  * Pide a Claude entre 3 y 5 adjetivos que encajen con la conducta descrita.
+ * `marco` explica de dónde sale la frase (quién es el sujeto, testimonio de
+ * un tercero, observación directa, o autoobservación) para que la IA no
+ * malinterprete una frase en primera persona como autodescripción.
  * Devuelve { candidatos: [{palabra, razon, confianza}], aviso_estado }.
  * Lanza un Error con un mensaje legible si algo falla (sin clave, red, límite...).
  */
-export async function sugerirAdjetivos(clave, conducta) {
-  return llamarClaude(clave, SISTEMA_SUGERIR, `Conducta: ${conducta}`);
+export async function sugerirAdjetivos(clave, conducta, marco = '') {
+  const mensaje = marco ? `CONTEXTO: ${marco}\nConducta: ${conducta}` : `Conducta: ${conducta}`;
+  return llamarClaude(clave, SISTEMA_SUGERIR, mensaje);
 }
 
 const SISTEMA_PATRON = `Eres el motor de análisis periódico de un registro de relaciones. Tu ÚNICA salida es JSON válido, sin marcas de código.
-Recibes una lista de frases sueltas, cada una con un identificador entre corchetes al principio: conductas o frases de una persona, registradas sin adjetivo todavía.
+Recibes una línea "CONTEXTO:" que explica de quién son estas frases (de un tercero sobre sí mismo, o autoobservaciones de quien registra), y luego una lista de frases sueltas, cada una con un identificador entre corchetes al principio: conductas registradas sin adjetivo todavía.
 Agrupa las que, juntas, respalden el mismo adjetivo de la LISTA o uno muy cercano (misma familia). Propón un adjetivo solo si al menos DOS frases distintas lo evidencian: una frase suelta no es un patrón, es una anécdota.
 Sé conservador: si las frases pueden explicarse por circunstancias distintas y no por un rasgo estable, no propongas nada para ellas.
 Formato: {"patrones":[{"palabra":"...","evidencias":["id1","id2"],"razon":"una frase que explique el patrón"}]}
@@ -94,11 +99,12 @@ ${listaLexico()}`;
 
 /**
  * Busca patrones en un conjunto de frases sueltas sin adjetivo (las
- * "Tendencias" de una persona). `frases` es [{id, texto}]. Devuelve
- * { patrones: [{palabra, evidencias: [id...], razon}] } — cada patrón
- * respaldado por al menos dos frases distintas.
+ * "Tendencias" de una persona). `frases` es [{id, texto}]. `marco` explica de
+ * quién son las frases. Devuelve { patrones: [{palabra, evidencias: [id...],
+ * razon}] } — cada patrón respaldado por al menos dos frases distintas.
  */
-export async function buscarPatrones(clave, frases) {
-  const mensaje = frases.map((f) => `[${f.id}] ${f.texto}`).join('\n');
+export async function buscarPatrones(clave, frases, marco = '') {
+  const cuerpo = frases.map((f) => `[${f.id}] ${f.texto}`).join('\n');
+  const mensaje = marco ? `CONTEXTO: ${marco}\n${cuerpo}` : cuerpo;
   return llamarClaude(clave, SISTEMA_PATRON, mensaje);
 }

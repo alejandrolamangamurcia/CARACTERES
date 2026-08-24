@@ -37,6 +37,26 @@ function buscarEnLexico(palabra) {
   return indiceLexico.get(palabra);
 }
 
+let palabrasLexico = null;
+function todasLasPalabras() {
+  if (!palabrasLexico) {
+    buscarEnLexico(''); // fuerza a construir indiceLexico si no existe todavía
+    palabrasLexico = [...indiceLexico.keys()].sort((a, b) => a.localeCompare(b));
+  }
+  return palabrasLexico;
+}
+
+/** Un <datalist> compartido con los 278 adjetivos, para que los campos de "añadir a
+ *  mano" propongan la lista según se escribe y no se cuelen erratas que rompan
+ *  el cruce de datos. id fijo: cualquier <input list="lexico-adjetivos"> lo usa. */
+function DatalistLexico() {
+  return (
+    <datalist id="lexico-adjetivos">
+      {todasLasPalabras().map((p) => <option key={p} value={p} />)}
+    </datalist>
+  );
+}
+
 const ESPERA_PULSACION_LARGA = 500; // ms
 
 /** Chip de un adjetivo sugerido: toque corto lo marca/desmarca, mantener pulsado enseña su definición. */
@@ -258,7 +278,15 @@ function ChipsElegidos({ elegidos, onQuitar }) {
 // --- Registrar: los cinco tipos de entrada -----------------------------------
 
 const TIPOS = Object.keys(constantes.ut);
-const ORDEN_REGISTRO = ['medijeron', 'roce', 'observacion', 'acierto', 'plan'];
+const ORDEN_REGISTRO = ['medijeron', 'roce', 'observacion', 'acierto', 'autoobservacion', 'plan'];
+
+const MARCOS_IA = {
+  medijeron: 'Es un testimonio: un tercero le dijo esto al usuario, sobre el propio usuario. Aunque esté en primera persona ("me dijo que yo era..."), NO es una autodescripción: es la opinión de otra persona.',
+  roce: 'Es un roce o fricción que vivió el usuario; la frase puede describir su propia conducta, la de la otra persona, o ambas.',
+  observacion: 'Es algo que el usuario observó directamente; puede ser sobre sí mismo o sobre otra persona, según lo que cuente la frase.',
+  acierto: 'Es algo que salió bien; puede ser un acierto del propio usuario o de otra persona.',
+  autoobservacion: 'Es una autoobservación del propio usuario: un acto concreto suyo (no cómo se percibe a sí mismo). Sí es evidencia válida de un rasgo, igual que un testimonio de un tercero.',
+};
 
 function Registrar({ datos, config, onGuardarEntries, onGuardarPeople }) {
   const [tipo, setTipo] = useState('medijeron');
@@ -268,6 +296,7 @@ function Registrar({ datos, config, onGuardarEntries, onGuardarPeople }) {
   const [tema, setTema] = useState('');
   const [frase, setFrase] = useState('');
   const [respuesta, setRespuesta] = useState(constantes.nf[0]);
+  const [sentir, setSentir] = useState('bien');
   const [si, setSi] = useState('');
   const [entonces, setEntonces] = useState('');
 
@@ -290,7 +319,7 @@ function Registrar({ datos, config, onGuardarEntries, onGuardarPeople }) {
     if (!frase.trim()) return;
     setPidiendo(true); setError(''); setAvisoEstado(null);
     try {
-      const r = await sugerirAdjetivos(config.apiKey, frase.trim());
+      const r = await sugerirAdjetivos(config.apiKey, frase.trim(), MARCOS_IA[tipo]);
       setCandidatos(r.candidatos || []);
       setAvisoEstado(r.aviso_estado || null);
       setElegidos(new Set());
@@ -339,6 +368,8 @@ function Registrar({ datos, config, onGuardarEntries, onGuardarPeople }) {
       entrada = { ...base, contextoFrase: contexto, frase: frase.trim(), adjetivos: [...elegidos] };
     } else if (tipo === 'roce') {
       entrada = { ...base, respuesta, frase: frase.trim(), adjetivos: [...elegidos] };
+    } else if (tipo === 'autoobservacion') {
+      entrada = { ...base, sentir, frase: frase.trim(), adjetivos: [...elegidos] };
     } else if (tipo === 'plan') {
       entrada = { ...base, si: si.trim(), entonces: entonces.trim(), planEstado: 'activo' };
     } else {
@@ -357,6 +388,7 @@ function Registrar({ datos, config, onGuardarEntries, onGuardarPeople }) {
     roce: 'Qué pasó',
     observacion: 'Qué observaste',
     acierto: 'Qué salió bien',
+    autoobservacion: 'Qué hiciste',
   }[tipo];
 
   return (
@@ -412,6 +444,30 @@ function Registrar({ datos, config, onGuardarEntries, onGuardarPeople }) {
           >
             {constantes.nf.map((r) => <option key={r} value={r}>{r}</option>)}
           </select>
+        </>
+      )}
+
+      {tipo === 'autoobservacion' && (
+        <>
+          <label className="lbl">Cómo te hizo sentir</label>
+          <div className="row" style={{ marginBottom: 8 }}>
+            <span
+              role="button" tabIndex={0}
+              className={`chip${sentir === 'bien' ? ' on' : ''}`}
+              style={sentir === 'bien' ? { borderColor: 'var(--ok)', color: 'var(--ok)' } : undefined}
+              onClick={() => setSentir('bien')}
+            >
+              Bien
+            </span>
+            <span
+              role="button" tabIndex={0}
+              className={`chip${sentir === 'mal' ? ' on' : ''}`}
+              style={sentir === 'mal' ? { borderColor: 'var(--bad)', color: 'var(--bad)' } : undefined}
+              onClick={() => setSentir('mal')}
+            >
+              Mal
+            </span>
+          </div>
         </>
       )}
 
@@ -481,7 +537,7 @@ function Registrar({ datos, config, onGuardarEntries, onGuardarPeople }) {
 
           <div className="row" style={{ marginTop: 10 }}>
             <input
-              className="fld grow" placeholder="Añadir otro adjetivo a mano"
+              className="fld grow" placeholder="Añadir otro adjetivo a mano" list="lexico-adjetivos"
               value={manual} onChange={(e) => setManual(e.target.value)}
             />
             <button type="button" className="btn btn-sm" onClick={anadirManual}>Añadir adjetivo</button>
@@ -578,6 +634,16 @@ function Entradas({ entries, people, onCambiarPlan }) {
               <>
                 {e.frase && <p style={{ margin: '6px 0 0' }}>{e.frase}</p>}
                 {e.respuesta && <p className="muted small" style={{ marginTop: 4 }}>{e.respuesta}</p>}
+                {e.tipo === 'autoobservacion' && (
+                  <span
+                    className="tag"
+                    style={e.sentir === 'mal'
+                      ? { borderColor: 'var(--bad)', color: 'var(--bad)' }
+                      : { borderColor: 'var(--ok)', color: 'var(--ok)' }}
+                  >
+                    {e.sentir === 'mal' ? 'Mal' : 'Bien'}
+                  </span>
+                )}
               </>
             )}
 
@@ -708,7 +774,11 @@ function TendenciasPersona({ persona, entries, config, onGuardarEntries }) {
   const buscar = async () => {
     setAnalizando(true); setErrorPatron(''); setPatrones(null);
     try {
-      const r = await buscarPatrones(config.apiKey, tendencias.map((t) => ({ id: t.id, texto: t.frase })));
+      const r = await buscarPatrones(
+        config.apiKey,
+        tendencias.map((t) => ({ id: t.id, texto: t.frase })),
+        `Estas frases describen la conducta de ${persona.nombre} (no la del usuario).`,
+      );
       setPatrones(r.patrones || []);
     } catch (e) {
       setErrorPatron(e.message);
@@ -849,7 +919,10 @@ function FichaPersona({ persona, entries, config, onGuardarEntries }) {
     if (!texto.trim()) return;
     setPidiendo(true); setError(''); setAvisoEstado(null);
     try {
-      const r = await sugerirAdjetivos(config.apiKey, texto.trim());
+      const r = await sugerirAdjetivos(
+        config.apiKey, texto.trim(),
+        `Esto describe la conducta de ${persona.nombre} (no la del usuario): algo que dijo o hizo.`,
+      );
       setCandidatos(r.candidatos || []);
       setAvisoEstado(r.aviso_estado || null);
       setElegidos(new Set());
@@ -996,7 +1069,7 @@ function FichaPersona({ persona, entries, config, onGuardarEntries }) {
 
       <div className="row" style={{ marginTop: 8 }}>
         <input
-          className="fld grow" placeholder="Añadir otro adjetivo a mano"
+          className="fld grow" placeholder="Añadir otro adjetivo a mano" list="lexico-adjetivos"
           value={manual} onChange={(e) => setManual(e.target.value)}
         />
         <button type="button" className="btn btn-sm" onClick={anadirManual}>Añadir adjetivo</button>
@@ -1025,6 +1098,7 @@ function Personas({ datos, onGuardarPeople, onGuardarEntries }) {
   const [personaAbierta, setPersonaAbierta] = useState(null);
 
   const dicho = perfil.loQueMeDicen(entries, people);
+  const auto = perfil.autoobservacionDeYo(entries);
   const misNormal = perfil.misAdjetivos(people, perfil.PERFIL_NORMAL);
   const misTension = perfil.misAdjetivos(people, perfil.PERFIL_TENSION);
   const ideal = perfil.miIdeal(people);
@@ -1070,7 +1144,7 @@ function Personas({ datos, onGuardarPeople, onGuardarEntries }) {
       <ListaAdjetivos titulo="En condiciones normales" adjetivos={misNormal} onQuitar={(p) => quitarMio(perfil.PERFIL_NORMAL, p)} />
       <div className="row" style={{ marginTop: 8 }}>
         <input
-          className="fld grow" placeholder="Añadir adjetivo (normal)" value={nuevoNormal}
+          className="fld grow" placeholder="Añadir adjetivo (normal)" list="lexico-adjetivos" value={nuevoNormal}
           onChange={(e) => setNuevoNormal(e.target.value)}
         />
         <button type="button" className="btn btn-sm" onClick={() => anadirMio(perfil.PERFIL_NORMAL, nuevoNormal, setNuevoNormal)}>
@@ -1083,7 +1157,7 @@ function Personas({ datos, onGuardarPeople, onGuardarEntries }) {
       <ListaAdjetivos titulo="En tensión" adjetivos={misTension} onQuitar={(p) => quitarMio(perfil.PERFIL_TENSION, p)} />
       <div className="row" style={{ marginTop: 8 }}>
         <input
-          className="fld grow" placeholder="Añadir adjetivo (tensión)" value={nuevoTension}
+          className="fld grow" placeholder="Añadir adjetivo (tensión)" list="lexico-adjetivos" value={nuevoTension}
           onChange={(e) => setNuevoTension(e.target.value)}
         />
         <button type="button" className="btn btn-sm" onClick={() => anadirMio(perfil.PERFIL_TENSION, nuevoTension, setNuevoTension)}>
@@ -1099,6 +1173,30 @@ function Personas({ datos, onGuardarPeople, onGuardarEntries }) {
 
       <hr className="sep" />
 
+      <h3 style={{ marginBottom: 6 }}>Lo que observas de ti (bien)</h3>
+      <p className="muted small">Se calcula de tus entradas de Autoobservación. No se escribe a mano.</p>
+      {auto.bien.length === 0 && <p className="muted small">Todavía no hay nada registrado.</p>}
+      {auto.bien.map((a) => (
+        <div key={a.palabra} className="row">
+          <span className="grow">{a.palabra}</span>
+          <span className="muted small">{a.veces} {a.veces === 1 ? 'vez' : 'veces'}</span>
+        </div>
+      ))}
+
+      <hr className="sep" />
+
+      <h3 style={{ marginBottom: 6 }}>Lo que observas de ti (mal)</h3>
+      <p className="muted small">Para tener presente qué rectificar, con la misma regla: sale de tus actos, no de cómo te ves.</p>
+      {auto.mal.length === 0 && <p className="muted small">Todavía no hay nada registrado.</p>}
+      {auto.mal.map((a) => (
+        <div key={a.palabra} className="row">
+          <span className="grow">{a.palabra}</span>
+          <span className="muted small">{a.veces} {a.veces === 1 ? 'vez' : 'veces'}</span>
+        </div>
+      ))}
+
+      <hr className="sep" />
+
       <h3 style={{ marginBottom: 6 }}>Mi ideal</h3>
       <p className="muted small">Adjetivos que te gustaría integrar en ti mismo. Sin límite.</p>
       {ideal.length === 0 && <p className="muted small">Nada todavía.</p>}
@@ -1109,7 +1207,7 @@ function Personas({ datos, onGuardarPeople, onGuardarEntries }) {
       ))}
       <div className="row" style={{ marginTop: 8 }}>
         <input
-          className="fld grow" placeholder="Añadir al ideal" value={nuevoIdeal}
+          className="fld grow" placeholder="Añadir al ideal" list="lexico-adjetivos" value={nuevoIdeal}
           onChange={(e) => setNuevoIdeal(e.target.value)}
         />
         <button type="button" className="btn btn-sm" onClick={anadirIdeal}>Añadir al ideal</button>
@@ -1478,7 +1576,10 @@ function PreguntarIA({ config, onGuardarConfig }) {
     if (!texto.trim()) return;
     setPidiendo(true); setError(''); setAvisoEstado(null);
     try {
-      const r = await sugerirAdjetivos(config.apiKey, texto.trim());
+      const r = await sugerirAdjetivos(
+        config.apiKey, texto.trim(),
+        'El usuario describe una conducta que ha visto en alguien (puede ser él mismo u otra persona); solo quiere identificar qué adjetivos encajan, para aprender vocabulario.',
+      );
       setCandidatos(r.candidatos || []);
       setAvisoEstado(r.aviso_estado || null);
       setElegidos(new Set((r.candidatos || []).map((c) => c.palabra)));
@@ -1901,6 +2002,7 @@ export function App() {
 
   return (
     <div className="crx">
+      <DatalistLexico />
       <div className="wrap">
         <div className="row" style={{ justifyContent: 'space-between', marginBottom: 4 }}>
           <p className="muted small" style={{ margin: 0 }}>
