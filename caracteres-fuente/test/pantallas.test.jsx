@@ -786,6 +786,38 @@ describe('Estadísticas y Estudio', () => {
     expect(screen.getByText('Se ve:', { exact: false })).toBeInTheDocument();
   });
 
+  it('se puede buscar un adjetivo directamente y salta a su sitio en los desplegables', async () => {
+    const u = userEvent.setup();
+    await entrar(u);
+    await irAMas(u, 'Estudio');
+    await u.click(screen.getByRole('button', { name: 'Consultar léxico' }));
+
+    await u.type(screen.getByLabelText('Buscar un adjetivo'), 'Sensato');
+    await u.click(screen.getByRole('button', { name: 'Buscar' }));
+
+    const textoSeleccionado = (etiqueta) => {
+      const select = screen.getByLabelText(etiqueta);
+      return select.options[select.selectedIndex].text;
+    };
+    expect(textoSeleccionado('Dimensión')).toBe('Honestidad y ego');
+    expect(textoSeleccionado('Polo')).toBe('Polo íntegro');
+    expect(textoSeleccionado('Familia')).toBe('fondo moral');
+    expect(textoSeleccionado('Adjetivo')).toBe('Sensato');
+    expect(screen.getByText(/toma decisiones razonables/)).toBeInTheDocument();
+  });
+
+  it('buscar un adjetivo que no existe avisa en vez de romperse', async () => {
+    const u = userEvent.setup();
+    await entrar(u);
+    await irAMas(u, 'Estudio');
+    await u.click(screen.getByRole('button', { name: 'Consultar léxico' }));
+
+    await u.type(screen.getByLabelText('Buscar un adjetivo'), 'Palabroinventada');
+    await u.click(screen.getByRole('button', { name: 'Buscar' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(/No se encontró/);
+  });
+
   it('el repaso responde y guarda el progreso', async () => {
     const u = userEvent.setup();
     await entrar(u);

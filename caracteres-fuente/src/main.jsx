@@ -1405,6 +1405,8 @@ function ConsultarLexico() {
   const [polo, setPolo] = useState(0);
   const [fam, setFam] = useState(0);
   const [ent, setEnt] = useState(0);
+  const [busqueda, setBusqueda] = useState('');
+  const [errorBusqueda, setErrorBusqueda] = useState('');
 
   const dims = lexico.dims;
   const polos = dims[dim]?.polos || [];
@@ -1412,8 +1414,41 @@ function ConsultarLexico() {
   const entradas = familias[fam]?.entradas || [];
   const actual = entradas[ent];
 
+  const buscar = () => {
+    const palabra = busqueda.trim();
+    if (!palabra) return;
+    const info = buscarEnLexico(palabra);
+    const dimIdx = info ? dims.findIndex((d) => d.titulo === info.dimension) : -1;
+    const poloIdx = dimIdx >= 0 ? dims[dimIdx].polos.findIndex((p) => p.nombre === info.polo) : -1;
+    const familiaObj = poloIdx >= 0 ? dims[dimIdx].polos[poloIdx].familias.find((f) => f.nombre === info.familia) : null;
+    const entIdx = familiaObj ? familiaObj.entradas.findIndex((e) => e.p === palabra) : -1;
+
+    if (!info || entIdx < 0) {
+      setErrorBusqueda(`No se encontró "${palabra}" en el léxico.`);
+      return;
+    }
+    setErrorBusqueda('');
+    setDim(dimIdx); setPolo(poloIdx);
+    setFam(dims[dimIdx].polos[poloIdx].familias.indexOf(familiaObj));
+    setEnt(entIdx);
+  };
+
   return (
     <div>
+      <label className="lbl" htmlFor="buscarAdjetivo">Buscar un adjetivo</label>
+      <div className="row" style={{ marginBottom: 8 }}>
+        <input
+          id="buscarAdjetivo" className="fld grow" list="lexico-adjetivos"
+          placeholder="Escribe un adjetivo…" value={busqueda}
+          onChange={(e) => { setBusqueda(e.target.value); setErrorBusqueda(''); }}
+          onKeyDown={(e) => { if (e.key === 'Enter') buscar(); }}
+        />
+        <button type="button" className="btn btn-sm" onClick={buscar}>Buscar</button>
+      </div>
+      {errorBusqueda && <div className="aviso" role="alert">{errorBusqueda}</div>}
+
+      <hr className="sep" />
+
       <label className="lbl" htmlFor="dim">Dimensión</label>
       <select id="dim" className="fld" value={dim} onChange={(e) => { setDim(+e.target.value); setPolo(0); setFam(0); setEnt(0); }}>
         {dims.map((d, i) => <option key={d.titulo} value={i}>{d.titulo}</option>)}
