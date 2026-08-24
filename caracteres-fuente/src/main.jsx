@@ -1164,16 +1164,27 @@ function AjustesCopias({ datos, onGuardarEntries, onGuardarPeople, onGuardarConf
       const texto = await backup.crearCopia({
         clave, sal: vault.salActual(), datos, fecha: new Date(),
       });
-      const blob = new Blob([texto], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = backup.nombreArchivo(new Date());
-      a.click();
-      URL.revokeObjectURL(url);
+      const nombre = backup.nombreArchivo(new Date());
+      const archivo = new File([texto], nombre, { type: 'text/plain' });
+
+      if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
+        await navigator.share({ files: [archivo], title: nombre });
+        setMensaje('Copia compartida.');
+      } else {
+        const blob = new Blob([texto], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = nombre;
+        a.click();
+        URL.revokeObjectURL(url);
+        setMensaje('Copia exportada.');
+      }
+
       await onGuardarConfig(backup.selloDeCopia(datos.config, datos.entries, datos.people, new Date()));
-      setMensaje('Copia exportada.');
       setPinExportar('');
+    } catch (e) {
+      if (e && e.name !== 'AbortError') setMensaje('No se pudo compartir. Inténtalo de nuevo.');
     } finally {
       setExportando(false);
     }
@@ -1213,7 +1224,8 @@ function AjustesCopias({ datos, onGuardarEntries, onGuardarPeople, onGuardarConf
       <h3 style={{ marginTop: 0 }}>Copia de seguridad</h3>
       <p className="muted small">
         El archivo sale cifrado con un PIN (puede ser el mismo que usas para entrar, u otro).
-        Se guarda como .txt porque Android no permite compartir .json.
+        Se guarda como .txt porque Android no permite compartir .json. Se abre el menú de
+        compartir del móvil: desde ahí puedes mandarlo a Google Drive o donde prefieras.
       </p>
 
       <label className="lbl" htmlFor="pinExportar">PIN para cifrar la copia</label>
@@ -1225,7 +1237,7 @@ function AjustesCopias({ datos, onGuardarEntries, onGuardarPeople, onGuardarConf
         className="btn btn-p" style={{ marginTop: 10 }}
         onClick={exportar} disabled={exportando || pinExportar.length < 4}
       >
-        {exportando ? 'Exportando…' : 'Exportar copia (.txt)'}
+        {exportando ? 'Un momento…' : 'Compartir copia (.txt)'}
       </button>
 
       <hr className="sep" />

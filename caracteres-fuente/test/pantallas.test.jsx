@@ -18,6 +18,8 @@ const irAMas = async (u, subEtiqueta) => {
   await u.click(screen.getByRole('button', { name: subEtiqueta }));
 };
 
+afterEach(() => { vi.unstubAllGlobals(); });
+
 describe('navegación básica', () => {
   beforeEach(() => { vault.cerrar(); localStorage.clear(); });
 
@@ -99,13 +101,13 @@ describe('Ajustes', () => {
 
     await irAMas(u, 'Ajustes');
 
-    // Exportar: createObjectURL/click de descarga no están en jsdom por defecto.
+    // Sin navigator.share (como en jsdom), cae al enlace de descarga.
     const urlEspia = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:falso');
     const revokeEspia = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
     const clickEspia = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
 
     await u.type(screen.getByLabelText('PIN para cifrar la copia'), '1234');
-    await u.click(screen.getByRole('button', { name: 'Exportar copia (.txt)' }));
+    await u.click(screen.getByRole('button', { name: 'Compartir copia (.txt)' }));
     await screen.findByText('Copia exportada.');
 
     expect(urlEspia).toHaveBeenCalled();
@@ -126,6 +128,47 @@ describe('Ajustes', () => {
     await u.click(screen.getByRole('button', { name: 'Abrir copia' }));
 
     expect(await screen.findByText('Copia importada. Sustituye a los datos anteriores.')).toBeInTheDocument();
+  });
+
+  it('si el móvil sabe compartir archivos, abre el menú de compartir en vez de descargar', async () => {
+    const u = userEvent.setup();
+    await entrar(u);
+    await irAMas(u, 'Ajustes');
+
+    const shareEspia = vi.fn().mockResolvedValue(undefined);
+    vi.stubGlobal('navigator', {
+      ...navigator,
+      canShare: () => true,
+      share: shareEspia,
+    });
+
+    await u.type(screen.getByLabelText('PIN para cifrar la copia'), '1234');
+    await u.click(screen.getByRole('button', { name: 'Compartir copia (.txt)' }));
+
+    expect(await screen.findByText('Copia compartida.')).toBeInTheDocument();
+    expect(shareEspia).toHaveBeenCalledTimes(1);
+    const args = shareEspia.mock.calls[0][0];
+    expect(args.files[0].name).toMatch(/^caracteres-.*\.txt$/);
+  });
+
+  it('si cancelas el menú de compartir, no muestra error ni marca la copia como hecha', async () => {
+    const u = userEvent.setup();
+    await entrar(u);
+    await irAMas(u, 'Ajustes');
+
+    const errorCancelado = Object.assign(new Error('cancelado'), { name: 'AbortError' });
+    vi.stubGlobal('navigator', {
+      ...navigator,
+      canShare: () => true,
+      share: vi.fn().mockRejectedValue(errorCancelado),
+    });
+
+    await u.type(screen.getByLabelText('PIN para cifrar la copia'), '1234');
+    await u.click(screen.getByRole('button', { name: 'Compartir copia (.txt)' }));
+
+    await screen.findByRole('button', { name: 'Compartir copia (.txt)' });
+    expect(screen.queryByText('Copia compartida.')).toBeNull();
+    expect(screen.queryByText(/No se pudo compartir/)).toBeNull();
   });
 });
 
