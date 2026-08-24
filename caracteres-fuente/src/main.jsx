@@ -155,6 +155,25 @@ function SelectorPersona({ people, personaId, onElegir, onCrear, etiqueta, reque
   );
 }
 
+// --- Adjetivos elegidos antes de guardar, cada uno con su ✕ para quitarlo ----
+
+function ChipsElegidos({ elegidos, onQuitar }) {
+  if (elegidos.size === 0) return null;
+  return (
+    <div style={{ marginTop: 8 }}>
+      <p className="muted small" style={{ marginBottom: 4 }}>Elegidos</p>
+      {[...elegidos].map((palabra) => (
+        <span
+          key={palabra} role="button" tabIndex={0}
+          className="chip on" onClick={() => onQuitar(palabra)}
+        >
+          {palabra} ✕
+        </span>
+      ))}
+    </div>
+  );
+}
+
 // --- Registrar: los cinco tipos de entrada -----------------------------------
 
 const TIPOS = Object.keys(constantes.ut);
@@ -390,11 +409,7 @@ function Registrar({ datos, config, onGuardarEntries, onGuardarPeople }) {
             <button type="button" className="btn btn-sm" onClick={anadirManual}>Añadir adjetivo</button>
           </div>
 
-          {elegidos.size > 0 && (
-            <p className="muted small" style={{ marginTop: 8 }}>
-              Elegidos: {[...elegidos].join(', ')}
-            </p>
-          )}
+          <ChipsElegidos elegidos={elegidos} onQuitar={alternar} />
         </>
       )}
 
@@ -538,7 +553,13 @@ function ListaDicho({ titulo, lista }) {
   );
 }
 
+const MODOS_REGISTRO = [
+  { v: 'dijo', l: 'Dijo' },
+  { v: 'gesto', l: 'Hizo o gesto' },
+];
+
 function FichaPersona({ persona, entries, config, onGuardarEntries }) {
+  const [modo, setModo] = useState('dijo');
   const [texto, setTexto] = useState('');
   const [pidiendo, setPidiendo] = useState(false);
   const [error, setError] = useState('');
@@ -587,7 +608,7 @@ function FichaPersona({ persona, entries, config, onGuardarEntries }) {
     setGuardando(true);
     const entrada = {
       id: uid(), tipo: 'observacion', ts: new Date().toISOString(), fechaEvento: hoyISO(),
-      conQuien: persona.id, frase: texto.trim(), adjetivos: [...elegidos],
+      conQuien: persona.id, modo, frase: texto.trim(), adjetivos: [...elegidos],
     };
     await onGuardarEntries([...(entries || []), entrada]);
     setGuardando(false);
@@ -607,13 +628,44 @@ function FichaPersona({ persona, entries, config, onGuardarEntries }) {
         </div>
       ))}
 
+      {frases.length > 0 && (
+        <>
+          <hr className="sep" />
+          <p className="muted small"><strong>Lo que llevas registrado</strong></p>
+          {frases.map((f) => (
+            <div key={f.id} className="entry">
+              <p style={{ margin: 0 }}>
+                {f.modo === 'gesto' ? 'Gesto: ' : f.modo === 'dijo' ? 'Dijo: ' : ''}{f.frase}
+              </p>
+              <p className="muted small" style={{ margin: '4px 0 0' }}>
+                {f.fechaEvento || (f.ts || '').slice(0, 10)}
+                {f.adjetivos && f.adjetivos.length > 0 && ` · ${f.adjetivos.join(', ')}`}
+              </p>
+            </div>
+          ))}
+        </>
+      )}
+
       <hr className="sep" />
 
-      <label className="lbl" htmlFor={`frase-${persona.id}`}>Algo que dijo o hizo</label>
+      <label className="lbl" htmlFor={`frase-${persona.id}`}>Añadir algo nuevo</label>
+      <div className="row" style={{ marginBottom: 8 }}>
+        {MODOS_REGISTRO.map((m) => (
+          <span
+            key={m.v} role="button" tabIndex={0}
+            className={`chip${modo === m.v ? ' on' : ''}`}
+            onClick={() => setModo(m.v)}
+          >
+            {m.l}
+          </span>
+        ))}
+      </div>
       <textarea
         id={`frase-${persona.id}`} className="fld"
         value={texto} onChange={(e) => setTexto(e.target.value)}
-        placeholder="La frase o la conducta, literal"
+        placeholder={modo === 'gesto'
+          ? 'Describe el gesto o la conducta: qué hizo, cómo, en qué momento'
+          : 'La frase, tal cual la dijo'}
       />
 
       <button
@@ -648,11 +700,7 @@ function FichaPersona({ persona, entries, config, onGuardarEntries }) {
         <button type="button" className="btn btn-sm" onClick={anadirManual}>Añadir adjetivo</button>
       </div>
 
-      {elegidos.size > 0 && (
-        <p className="muted small" style={{ marginTop: 8 }}>
-          Elegidos: {[...elegidos].join(', ')}
-        </p>
-      )}
+      <ChipsElegidos elegidos={elegidos} onQuitar={alternar} />
 
       <button
         type="button" className="btn btn-p btn-full" style={{ marginTop: 10 }}
@@ -661,22 +709,6 @@ function FichaPersona({ persona, entries, config, onGuardarEntries }) {
         {guardando ? 'Guardando…' : 'Guardar'}
       </button>
       {guardadoOk && <div className="toast">Guardada.</div>}
-
-      {frases.length > 0 && (
-        <>
-          <hr className="sep" />
-          <p className="muted small"><strong>Frases registradas</strong></p>
-          {frases.map((f) => (
-            <div key={f.id} className="entry">
-              <p style={{ margin: 0 }}>{f.frase}</p>
-              <p className="muted small" style={{ margin: '4px 0 0' }}>
-                {f.fechaEvento || (f.ts || '').slice(0, 10)}
-                {f.adjetivos && f.adjetivos.length > 0 && ` · ${f.adjetivos.join(', ')}`}
-              </p>
-            </div>
-          ))}
-        </>
-      )}
     </div>
   );
 }

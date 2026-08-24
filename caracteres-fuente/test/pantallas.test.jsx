@@ -238,6 +238,17 @@ describe('Registrar (los cinco tipos)', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent(/clave/i);
   });
 
+  it('un adjetivo añadido a mano se puede quitar antes de guardar', async () => {
+    const u = userEvent.setup();
+    await entrar(u);
+    await u.type(screen.getByPlaceholderText('Añadir otro adjetivo a mano'), 'Tozudo');
+    await u.click(screen.getByRole('button', { name: 'Añadir adjetivo' }));
+    expect(await screen.findByText('Tozudo ✕')).toBeInTheDocument();
+
+    await u.click(screen.getByText('Tozudo ✕'));
+    expect(screen.queryByText('Tozudo ✕')).toBeNull();
+  });
+
   it('registra un roce con quién, tema y cómo respondiste', async () => {
     const u = userEvent.setup();
     await entrar(u);
@@ -347,7 +358,7 @@ describe('la ficha de cada persona', () => {
     await u.type(screen.getByPlaceholderText('Nombre o iniciales'), 'Luis');
     await u.click(screen.getByRole('button', { name: 'Añadir persona' }));
 
-    await u.type(screen.getByLabelText('Algo que dijo o hizo'), 'Invitó a toda la mesa sin que nadie se lo pidiera');
+    await u.type(screen.getByLabelText('Añadir algo nuevo'), 'Invitó a toda la mesa sin que nadie se lo pidiera');
     await u.click(screen.getByRole('button', { name: 'Sugerir adjetivos' }));
 
     const chip = await screen.findByText('Generoso');
@@ -358,7 +369,7 @@ describe('la ficha de cada persona', () => {
     await screen.findByText('Guardada.');
 
     expect(screen.getByText('1 vez')).toBeInTheDocument();
-    expect(screen.getByText('Invitó a toda la mesa sin que nadie se lo pidiera')).toBeInTheDocument();
+    expect(screen.getByText(/Dijo: Invitó a toda la mesa/)).toBeInTheDocument();
     expect(fetchEspia).toHaveBeenCalledTimes(1);
 
     // También aparece en el registro general de Entradas.
@@ -373,9 +384,50 @@ describe('la ficha de cada persona', () => {
     await u.type(screen.getByPlaceholderText('Nombre o iniciales'), 'Luis');
     await u.click(screen.getByRole('button', { name: 'Añadir persona' }));
 
-    await u.type(screen.getByLabelText('Algo que dijo o hizo'), 'Algo que hizo');
+    await u.type(screen.getByLabelText('Añadir algo nuevo'), 'Algo que hizo');
     await u.click(screen.getByRole('button', { name: 'Sugerir adjetivos' }));
     expect(await screen.findByRole('alert')).toHaveTextContent(/clave/i);
+  });
+
+  it('un adjetivo elegido se puede quitar antes de guardar', async () => {
+    const u = userEvent.setup();
+    await entrar(u);
+    await u.click(screen.getByRole('button', { name: 'Personas' }));
+    await u.type(screen.getByPlaceholderText('Nombre o iniciales'), 'Luis');
+    await u.click(screen.getByRole('button', { name: 'Añadir persona' }));
+
+    await u.type(screen.getByPlaceholderText('Añadir otro adjetivo a mano'), 'Tozudo');
+    await u.click(screen.getByRole('button', { name: 'Añadir adjetivo' }));
+    expect(await screen.findByText('Tozudo ✕')).toBeInTheDocument();
+
+    await u.click(screen.getByText('Tozudo ✕'));
+    expect(screen.queryByText('Tozudo ✕')).toBeNull();
+
+    // Al guardar sin adjetivos elegidos, no se cuela ninguno.
+    await u.type(screen.getByLabelText('Añadir algo nuevo'), 'No dio su brazo a torcer');
+    await u.click(screen.getByRole('button', { name: 'Guardar' }));
+    await screen.findByText('Guardada.');
+    expect(screen.getByText('Todavía no hay nada registrado.')).toBeInTheDocument();
+  });
+
+  it('registrar un gesto (no una frase textual) también saca adjetivos y queda marcado como tal', async () => {
+    const u = userEvent.setup();
+    await entrar(u);
+    await u.click(screen.getByRole('button', { name: 'Personas' }));
+    await u.type(screen.getByPlaceholderText('Nombre o iniciales'), 'Luis');
+    await u.click(screen.getByRole('button', { name: 'Añadir persona' }));
+
+    await u.click(screen.getByRole('button', { name: 'Hizo o gesto' }));
+    await u.type(
+      screen.getByLabelText('Añadir algo nuevo'),
+      'Puso los ojos en blanco cuando le llevé la contraria',
+    );
+    await u.type(screen.getByPlaceholderText('Añadir otro adjetivo a mano'), 'Desdeñoso');
+    await u.click(screen.getByRole('button', { name: 'Añadir adjetivo' }));
+    await u.click(screen.getByRole('button', { name: 'Guardar' }));
+    await screen.findByText('Guardada.');
+
+    expect(screen.getByText(/Gesto: Puso los ojos en blanco/)).toBeInTheDocument();
   });
 });
 
