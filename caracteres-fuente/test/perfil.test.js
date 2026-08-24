@@ -104,8 +104,8 @@ describe('mis apartados y mi ideal', () => {
 });
 
 describe('la ficha de una persona (a partir de sus "Observación")', () => {
-  const obs = (id, quien, adjetivos, frase, cuando) => ({
-    id, tipo: 'observacion', conQuien: quien, adjetivos, frase, fechaEvento: cuando,
+  const obs = (id, quien, adjetivos, frase, cuando, contexto = 'En calma') => ({
+    id, tipo: 'observacion', conQuien: quien, adjetivos, frase, fechaEvento: cuando, contextoFrase: contexto,
   });
 
   it('agrupa los adjetivos por frecuencia', () => {
@@ -114,22 +114,33 @@ describe('la ficha de una persona (a partir de sus "Observación")', () => {
       obs('2', 'p1', ['Tozudo', 'Generoso'], 'invitó a todos', '2026-08-05'),
     ];
     const ficha = P.fichaDePersona(entries, 'p1');
-    expect(ficha[0]).toMatchObject({ palabra: 'Tozudo', veces: 2 });
-    expect(ficha[1]).toMatchObject({ palabra: 'Generoso', veces: 1 });
+    expect(ficha.normal[0]).toMatchObject({ palabra: 'Tozudo', veces: 2 });
+    expect(ficha.normal[1]).toMatchObject({ palabra: 'Generoso', veces: 1 });
+  });
+
+  it('separa lo que hace en calma de lo que hace en discusión', () => {
+    const entries = [
+      obs('1', 'p1', ['Cortante'], 'contestó mal', '2026-08-01', 'En discusión'),
+      obs('2', 'p1', ['Generoso'], 'invitó a todos', '2026-08-05', 'En calma'),
+    ];
+    const ficha = P.fichaDePersona(entries, 'p1');
+    expect(ficha.tension.map((x) => x.palabra)).toEqual(['Cortante']);
+    expect(ficha.normal.map((x) => x.palabra)).toEqual(['Generoso']);
   });
 
   it('cada adjetivo guarda de qué frase salió', () => {
     const entries = [obs('1', 'p1', ['Tozudo'], 'no dio su brazo a torcer', '2026-08-01')];
     const ficha = P.fichaDePersona(entries, 'p1');
-    expect(ficha[0].testimonios[0]).toMatchObject({ entryId: '1', frase: 'no dio su brazo a torcer' });
+    expect(ficha.normal[0].testimonios[0]).toMatchObject({ entryId: '1', frase: 'no dio su brazo a torcer' });
   });
 
-  it('ignora entradas de otras personas o de otro tipo', () => {
+  it('ignora entradas de otras personas, de otro tipo, o pendientes de tendencia', () => {
     const entries = [
       obs('1', 'p2', ['Tozudo'], 'x', '2026-08-01'),
       dijo('2', 'p1', ['Impaciente'], 'En calma', '2026-08-01'),
+      { ...obs('3', 'p1', ['Cortante'], 'y', '2026-08-01'), tendencia: true },
     ];
-    expect(P.fichaDePersona(entries, 'p1')).toEqual([]);
+    expect(P.fichaDePersona(entries, 'p1')).toEqual({ normal: [], tension: [] });
   });
 
   it('lista las frases literales, más recientes primero', () => {
@@ -139,6 +150,51 @@ describe('la ficha de una persona (a partir de sus "Observación")', () => {
     ];
     const frases = P.frasesDePersona(entries, 'p1');
     expect(frases.map((f) => f.frase)).toEqual(['segunda', 'primera']);
+  });
+
+  it('las frases pendientes de tendencia no cuentan como registradas', () => {
+    const entries = [
+      obs('1', 'p1', ['Tozudo'], 'confirmada', '2026-08-01'),
+      { ...obs('2', 'p1', [], 'pendiente', '2026-08-10'), tendencia: true },
+    ];
+    expect(P.frasesDePersona(entries, 'p1').map((f) => f.frase)).toEqual(['confirmada']);
+  });
+});
+
+describe('tendencias: frases sueltas sin adjetivo, a la espera de un patrón', () => {
+  const tend = (id, quien, frase, cuando) => ({
+    id, tipo: 'observacion', conQuien: quien, frase, fechaEvento: cuando, adjetivos: [], tendencia: true,
+  });
+
+  it('lista solo las frases marcadas como tendencia, más recientes primero', () => {
+    const entries = [
+      tend('1', 'p1', 'primera', '2026-08-01'),
+      tend('2', 'p1', 'segunda', '2026-08-10'),
+      { id: '3', tipo: 'observacion', conQuien: 'p1', frase: 'ya confirmada', adjetivos: ['Tozudo'] },
+    ];
+    const t = P.tendenciasDePersona(entries, 'p1');
+    expect(t.map((x) => x.frase)).toEqual(['segunda', 'primera']);
+  });
+
+  it('confirmar un patrón añade el adjetivo y saca las frases de tendencias', () => {
+    const entries = [
+      tend('1', 'p1', 'la confundió con su ex', '2026-08-01'),
+      tend('2', 'p1', 'volvió a confundirla', '2026-08-05'),
+      tend('3', 'p1', 'algo sin relación', '2026-08-06'),
+    ];
+    const confirmadas = P.confirmarPatron(entries, ['1', '2'], 'Despistado');
+
+    expect(P.tendenciasDePersona(confirmadas, 'p1').map((x) => x.id)).toEqual(['3']);
+    const [e1, e2] = confirmadas;
+    expect(e1.adjetivos).toEqual(['Despistado']);
+    expect(e1.tendencia).toBe(false);
+    expect(e2.adjetivos).toEqual(['Despistado']);
+  });
+
+  it('confirmar un patrón no duplica el adjetivo si ya estaba', () => {
+    const entries = [{ ...tend('1', 'p1', 'x', '2026-08-01'), adjetivos: ['Despistado'] }];
+    const confirmadas = P.confirmarPatron(entries, ['1'], 'Despistado');
+    expect(confirmadas[0].adjetivos).toEqual(['Despistado']);
   });
 });
 

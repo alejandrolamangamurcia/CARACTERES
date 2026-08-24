@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { sugerirAdjetivos } from '../src/lib/ia.js';
+import { sugerirAdjetivos, buscarPatrones } from '../src/lib/ia.js';
 
 const respuestaOk = (candidatos, aviso_estado = null) => ({
   ok: true,
@@ -57,5 +57,42 @@ describe('sugerirAdjetivos', () => {
   it('fallo de red da un mensaje claro', async () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('boom')));
     await expect(sugerirAdjetivos('k', 'algo')).rejects.toThrow(/red/i);
+  });
+});
+
+describe('buscarPatrones', () => {
+  afterEach(() => { vi.unstubAllGlobals(); });
+
+  const respuestaPatrones = (patrones) => ({
+    ok: true,
+    status: 200,
+    json: async () => ({
+      content: [{ type: 'text', text: JSON.stringify({ patrones }) }],
+    }),
+  });
+
+  it('manda las frases numeradas por id y devuelve los patrones', async () => {
+    const patrones = [{ palabra: 'Despistado', evidencias: ['a', 'b'], razon: 'la confunde dos veces' }];
+    const fetchEspia = vi.fn().mockResolvedValue(respuestaPatrones(patrones));
+    vi.stubGlobal('fetch', fetchEspia);
+
+    const r = await buscarPatrones('clave', [
+      { id: 'a', texto: 'la confundió con su ex' },
+      { id: 'b', texto: 'volvió a confundirla' },
+    ]);
+
+    expect(r.patrones).toEqual(patrones);
+    const [, opts] = fetchEspia.mock.calls[0];
+    const body = JSON.parse(opts.body);
+    expect(body.messages[0].content).toBe(
+      '[a] la confundió con su ex\n[b] volvió a confundirla',
+    );
+  });
+
+  it('sin clave, falla antes de llamar a la red', async () => {
+    const fetchEspia = vi.fn();
+    vi.stubGlobal('fetch', fetchEspia);
+    await expect(buscarPatrones('', [{ id: 'a', texto: 'x' }])).rejects.toThrow(/clave/i);
+    expect(fetchEspia).not.toHaveBeenCalled();
   });
 });

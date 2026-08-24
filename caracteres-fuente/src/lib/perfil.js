@@ -135,18 +135,23 @@ export function quitarDelIdeal(people, palabra) {
 // registra lo que dijo o hizo (entradas "Observación" con esa persona) y el
 // adjetivo sale de ahí.
 
+/** Las entradas ya etiquetadas de una persona (no las de "Tendencias", que van sin adjetivo todavía). */
+const entradasEtiquetadas = (entries, personaId) =>
+  entries.filter((e) => e.tipo === 'observacion' && e.conQuien === personaId && !e.tendencia);
+
 /**
  * Adjetivos que sostienen los actos de una persona, con cuántas veces se
- * han visto y en qué entradas. Ordenados por frecuencia.
+ * han visto y en qué entradas. Separados en calma / en discusión, igual que
+ * "lo que me dicen" en Yo. Ordenados por frecuencia.
  */
 export function fichaDePersona(entries = [], personaId) {
   const cubos = new Map();
 
-  for (const e of entries) {
-    if (e.tipo !== 'observacion' || e.conQuien !== personaId) continue;
+  for (const e of entradasEtiquetadas(entries, personaId)) {
+    const perfil = perfilDeContexto(e.contextoFrase);
     for (const adj of e.adjetivos || []) {
-      const llave = norm(adj);
-      if (!cubos.has(llave)) cubos.set(llave, { palabra: adj, testimonios: [] });
+      const llave = `${perfil}|${norm(adj)}`;
+      if (!cubos.has(llave)) cubos.set(llave, { palabra: adj, perfil, testimonios: [] });
       cubos.get(llave).testimonios.push({
         entryId: e.id,
         frase: e.frase || '',
@@ -155,18 +160,49 @@ export function fichaDePersona(entries = [], personaId) {
     }
   }
 
-  return [...cubos.values()]
-    .map((c) => ({
-      palabra: c.palabra,
-      veces: c.testimonios.length,
-      testimonios: c.testimonios.sort((a, b) => String(b.cuando).localeCompare(String(a.cuando))),
-    }))
-    .sort((a, b) => b.veces - a.veces || a.palabra.localeCompare(b.palabra));
+  const salida = [...cubos.values()].map((c) => ({
+    palabra: c.palabra,
+    perfil: c.perfil,
+    veces: c.testimonios.length,
+    testimonios: c.testimonios.sort((a, b) => String(b.cuando).localeCompare(String(a.cuando))),
+  }));
+
+  const ordenar = (a, b) => b.veces - a.veces || a.palabra.localeCompare(b.palabra);
+
+  return {
+    normal: salida.filter((x) => x.perfil === PERFIL_NORMAL).sort(ordenar),
+    tension: salida.filter((x) => x.perfil === PERFIL_TENSION).sort(ordenar),
+  };
 }
 
-/** Las frases literales registradas de una persona, más recientes primero. */
+/** Las frases ya etiquetadas de una persona, más recientes primero. */
 export function frasesDePersona(entries = [], personaId) {
-  return entries
-    .filter((e) => e.tipo === 'observacion' && e.conQuien === personaId)
+  return entradasEtiquetadas(entries, personaId)
     .sort((a, b) => String(b.fechaEvento || b.ts || '').localeCompare(String(a.fechaEvento || a.ts || '')));
+}
+
+// --- Tendencias: frases sueltas sin adjetivo, a la espera de que se repita -
+//
+// Aquí no se elige el adjetivo al escribir: se anota la conducta tal cual, y
+// cuando varias frases apuntan al mismo adjetivo (o a uno muy cercano), la
+// IA lo señala como patrón. Confirmar un patrón pasa esas frases a la ficha
+// normal, con el adjetivo ya puesto.
+
+/** Frases de una persona todavía sin adjetivo, más recientes primero. */
+export function tendenciasDePersona(entries = [], personaId) {
+  return entries
+    .filter((e) => e.tipo === 'observacion' && e.conQuien === personaId && e.tendencia)
+    .sort((a, b) => String(b.fechaEvento || b.ts || '').localeCompare(String(a.fechaEvento || a.ts || '')));
+}
+
+/** Aplica un patrón confirmado: añade el adjetivo a esas entradas y las saca de "Tendencias". */
+export function confirmarPatron(entries, evidenciaIds, palabra) {
+  const idsAConfirmar = new Set(evidenciaIds);
+  return entries.map((e) => {
+    if (!idsAConfirmar.has(e.id)) return e;
+    const adjetivos = (e.adjetivos || []).some((a) => norm(a) === norm(palabra))
+      ? e.adjetivos
+      : [...(e.adjetivos || []), palabra];
+    return { ...e, adjetivos, tendencia: false };
+  });
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { App } from '../src/main.jsx';
 import * as vault from '../src/lib/vault.js';
@@ -442,7 +442,8 @@ describe('la ficha de cada persona', () => {
 
     expect(await screen.findByText('Luis')).toBeInTheDocument();
     // Al crearla se abre su ficha directamente.
-    expect(screen.getByText('Adjetivos que sostienen sus actos')).toBeInTheDocument();
+    expect(screen.getByText('Adjetivos (en calma)')).toBeInTheDocument();
+    expect(screen.getByText('Adjetivos (en discusión)')).toBeInTheDocument();
   });
 
   it('registra una frase, la IA saca adjetivos y quedan en la ficha', async () => {
@@ -521,7 +522,7 @@ describe('la ficha de cada persona', () => {
     await u.type(screen.getByLabelText('Añadir algo nuevo'), 'No dio su brazo a torcer');
     await u.click(screen.getByRole('button', { name: 'Guardar' }));
     await screen.findByText('Guardada.');
-    expect(screen.getByText('Todavía no hay nada registrado.')).toBeInTheDocument();
+    expect(screen.getAllByText('Todavía no hay nada registrado.')).toHaveLength(2);
   });
 
   it('registrar un gesto (no una frase textual) también saca adjetivos y queda marcado como tal', async () => {
@@ -531,7 +532,9 @@ describe('la ficha de cada persona', () => {
     await u.type(screen.getByPlaceholderText('Nombre o iniciales'), 'Luis');
     await u.click(screen.getByRole('button', { name: 'Añadir persona' }));
 
-    await u.click(screen.getByRole('button', { name: 'Hizo o gesto' }));
+    // Hay dos toggles "Hizo o gesto": el de Tendencias y el de "Añadir algo nuevo" (este último).
+    const togglesGesto = screen.getAllByRole('button', { name: 'Hizo o gesto' });
+    await u.click(togglesGesto[togglesGesto.length - 1]);
     await u.type(
       screen.getByLabelText('Añadir algo nuevo'),
       'Puso los ojos en blanco cuando le llevé la contraria',
@@ -542,6 +545,147 @@ describe('la ficha de cada persona', () => {
     await screen.findByText('Guardada.');
 
     expect(screen.getByText(/Gesto: Puso los ojos en blanco/)).toBeInTheDocument();
+  });
+
+  it('separa los adjetivos en calma y en discusión según el contexto', async () => {
+    const u = userEvent.setup();
+    await entrar(u);
+    await u.click(screen.getByRole('button', { name: 'Personas' }));
+    await u.type(screen.getByPlaceholderText('Nombre o iniciales'), 'Luis');
+    await u.click(screen.getByRole('button', { name: 'Añadir persona' }));
+
+    // Hay dos selects "Contexto": el de Tendencias y el de "Añadir algo nuevo" (este último).
+    const selectsContexto = screen.getAllByLabelText('Contexto');
+    const selectPrincipal = selectsContexto[selectsContexto.length - 1];
+
+    // Por defecto ya es "En discusión" (primera opción de la lista).
+    await u.type(screen.getByLabelText('Añadir algo nuevo'), 'Contestó de malas formas');
+    await u.type(screen.getByPlaceholderText('Añadir otro adjetivo a mano'), 'Cortante');
+    await u.click(screen.getByRole('button', { name: 'Añadir adjetivo' }));
+    await u.click(screen.getByRole('button', { name: 'Guardar' }));
+    await screen.findByText('Guardada.');
+
+    // La segunda, explícitamente en calma.
+    await u.selectOptions(selectPrincipal, 'En calma');
+    await u.type(screen.getByLabelText('Añadir algo nuevo'), 'Ayudó sin que se lo pidieran');
+    await u.type(screen.getByPlaceholderText('Añadir otro adjetivo a mano'), 'Generoso');
+    await u.click(screen.getByRole('button', { name: 'Añadir adjetivo' }));
+    await u.click(screen.getByRole('button', { name: 'Guardar' }));
+    await screen.findByText('Guardada.');
+
+    // "Generoso" debe caer bajo "Adjetivos (en calma)" y "Cortante" bajo "(en discusión)".
+    const texto = document.body.textContent;
+    const iCalma = texto.indexOf('Adjetivos (en calma)');
+    const iDiscusion = texto.indexOf('Adjetivos (en discusión)');
+    const iGeneroso = texto.indexOf('Generoso');
+    const iCortante = texto.indexOf('Cortante');
+    expect(iGeneroso).toBeGreaterThan(iCalma);
+    expect(iGeneroso).toBeLessThan(iDiscusion);
+    expect(iCortante).toBeGreaterThan(iDiscusion);
+  });
+
+  it('una entrada registrada se puede abrir, quitarle un adjetivo, y borrarla', async () => {
+    const u = userEvent.setup();
+    await entrar(u);
+    await u.click(screen.getByRole('button', { name: 'Personas' }));
+    await u.type(screen.getByPlaceholderText('Nombre o iniciales'), 'Luis');
+    await u.click(screen.getByRole('button', { name: 'Añadir persona' }));
+
+    await u.type(screen.getByLabelText('Añadir algo nuevo'), 'No dio su brazo a torcer');
+    await u.type(screen.getByPlaceholderText('Añadir otro adjetivo a mano'), 'Tozudo');
+    await u.click(screen.getByRole('button', { name: 'Añadir adjetivo' }));
+    await u.click(screen.getByRole('button', { name: 'Guardar' }));
+    await screen.findByText('Guardada.');
+
+    // Se abre al tocarla.
+    await u.click(screen.getByText(/No dio su brazo a torcer/));
+    expect(await screen.findByText('Tozudo ✕')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Borrar entrada' })).toBeInTheDocument();
+
+    // Quitarle el adjetivo la deja sin ninguno.
+    await u.click(screen.getByText('Tozudo ✕'));
+    expect(screen.queryByText('Tozudo ✕')).toBeNull();
+    expect(screen.getAllByText('Todavía no hay nada registrado.')).toHaveLength(2);
+
+    // Borrarla la saca del todo.
+    await u.click(screen.getByRole('button', { name: 'Borrar entrada' }));
+    expect(screen.queryByText(/No dio su brazo a torcer/)).toBeNull();
+  });
+
+  it('Tendencias: dos frases sin adjetivo, la IA detecta el patrón y al confirmarlo pasa a la ficha', async () => {
+    const u = userEvent.setup();
+
+    // IDs controlados: 1º la persona, 2º y 3º sus dos frases de tendencia.
+    vi.spyOn(crypto, 'randomUUID')
+      .mockReturnValueOnce('id-persona')
+      .mockReturnValueOnce('id-frase-1')
+      .mockReturnValueOnce('id-frase-2');
+
+    await entrar(u);
+    await irAMas(u, 'Ajustes');
+    await u.type(screen.getByLabelText(/Clave de Anthropic/), 'sk-ant-prueba');
+    await u.click(screen.getByRole('button', { name: 'Guardar clave' }));
+    await screen.findByText('Guardada.');
+
+    await u.click(screen.getByRole('button', { name: 'Personas' }));
+    await u.type(screen.getByPlaceholderText('Nombre o iniciales'), 'Luis');
+    await u.click(screen.getByRole('button', { name: 'Añadir persona' }));
+
+    await u.type(screen.getByLabelText('Añadir frase suelta'), 'La confundió con su ex en la fiesta');
+    await u.click(screen.getByRole('button', { name: 'Guardar en tendencias' }));
+    await screen.findByText('Guardada.');
+
+    await u.type(screen.getByLabelText('Añadir frase suelta'), 'Otra vez la llamó por el nombre de su ex');
+    await u.click(screen.getByRole('button', { name: 'Guardar en tendencias' }));
+    await screen.findByText('Guardada.');
+
+    expect(screen.getByText(/La confundió con su ex en la fiesta/)).toBeInTheDocument();
+    expect(screen.getByText(/Otra vez la llamó por el nombre de su ex/)).toBeInTheDocument();
+
+    const fetchEspia = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        content: [{
+          type: 'text',
+          text: JSON.stringify({
+            patrones: [{
+              palabra: 'Despistado',
+              evidencias: ['id-frase-1', 'id-frase-2'],
+              razon: 'la confunde con su ex dos veces',
+            }],
+          }),
+        }],
+      }),
+    });
+    vi.stubGlobal('fetch', fetchEspia);
+    await u.click(screen.getByRole('button', { name: 'Buscar patrones' }));
+
+    expect(await screen.findByText('Despistado')).toBeInTheDocument();
+    expect(screen.getByText('la confunde con su ex dos veces')).toBeInTheDocument();
+
+    const [, opts] = fetchEspia.mock.calls[0];
+    const enviado = JSON.parse(opts.body).messages[0].content;
+    expect(enviado).toBe(
+      '[id-frase-1] La confundió con su ex en la fiesta\n[id-frase-2] Otra vez la llamó por el nombre de su ex',
+    );
+
+    await u.click(screen.getByRole('button', { name: 'Confirmar Despistado' }));
+
+    // El adjetivo queda confirmado en la ficha (contexto por defecto: en discusión),
+    // respaldado por las dos frases.
+    await waitFor(() => {
+      expect(screen.getByText('2 veces')).toBeInTheDocument();
+    });
+    expect(screen.getAllByText('Despistado').length).toBeGreaterThan(0);
+
+    // Las frases ya no están pendientes de patrón: el botón "Buscar patrones" se
+    // desactiva porque Tendencias se quedó sin frases.
+    expect(screen.getByRole('button', { name: 'Buscar patrones' })).toBeDisabled();
+
+    // Y siguen visibles, ahora bajo "Lo que llevas registrado" en vez de Tendencias.
+    expect(screen.getByText(/La confundió con su ex en la fiesta/)).toBeInTheDocument();
+    expect(screen.getByText(/Otra vez la llamó por el nombre de su ex/)).toBeInTheDocument();
   });
 });
 
