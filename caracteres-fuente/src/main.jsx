@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import * as vault from './lib/vault.js';
 import { sugerirAdjetivos } from './lib/ia.js';
 import * as perfil from './lib/perfil.js';
@@ -14,6 +14,87 @@ export const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'dev';
 const uid = () => crypto.randomUUID();
 const hoyISO = () => new Date().toISOString().slice(0, 10);
 const nombreDe = (people, id) => (people.find((p) => p.id === id) || {}).nombre || 'Sin identificar';
+
+// --- Buscar un adjetivo en el léxico (definición y "Se ve:") -----------------
+
+let indiceLexico = null;
+function buscarEnLexico(palabra) {
+  if (!indiceLexico) {
+    indiceLexico = new Map();
+    for (const dim of lexico.dims) {
+      for (const polo of dim.polos) {
+        for (const fam of polo.familias) {
+          for (const e of fam.entradas) {
+            indiceLexico.set(e.p, {
+              definicion: e.d, situacion: e.v,
+              dimension: dim.titulo, polo: polo.nombre, familia: fam.nombre,
+            });
+          }
+        }
+      }
+    }
+  }
+  return indiceLexico.get(palabra);
+}
+
+const ESPERA_PULSACION_LARGA = 500; // ms
+
+/** Chip de un adjetivo sugerido: toque corto lo marca/desmarca, mantener pulsado enseña su definición. */
+function ChipCandidato({ palabra, seleccionado, razon, sufijo, onAlternar, onVerDefinicion }) {
+  const temporizador = useRef(null);
+  const disparado = useRef(false);
+
+  const empezar = () => {
+    disparado.current = false;
+    temporizador.current = setTimeout(() => {
+      disparado.current = true;
+      onVerDefinicion(palabra);
+    }, ESPERA_PULSACION_LARGA);
+  };
+  const terminar = () => {
+    clearTimeout(temporizador.current);
+    if (!disparado.current) onAlternar(palabra);
+  };
+  const cancelar = () => clearTimeout(temporizador.current);
+
+  return (
+    <span
+      role="button" tabIndex={0}
+      className={`chip${seleccionado ? ' on' : ''}`}
+      title={razon}
+      onPointerDown={empezar}
+      onPointerUp={terminar}
+      onPointerLeave={cancelar}
+      onPointerCancel={cancelar}
+    >
+      {palabra}{sufijo || ''}
+    </span>
+  );
+}
+
+/** El recuadro con la definición y el "Se ve:" de un adjetivo, con su ✕ para cerrarlo. */
+function DefinicionAdjetivo({ palabra, onCerrar }) {
+  const info = buscarEnLexico(palabra);
+  return (
+    <div className="bkd" onClick={onCerrar}>
+      <div className="bmd" style={{ textAlign: 'left' }} onClick={(e) => e.stopPropagation()}>
+        <div className="row" style={{ justifyContent: 'space-between', marginBottom: 8 }}>
+          <h3 style={{ margin: 0, textAlign: 'left' }}>{palabra}</h3>
+          <button type="button" className="btn btn-sm" onClick={onCerrar}>✕</button>
+        </div>
+        {info ? (
+          <>
+            <p className="muted small">{info.dimension} · {info.polo} · {info.familia}</p>
+            <p className="small">{info.definicion}</p>
+            <p className="muted small" style={{ marginTop: 8 }}>Se ve: {info.situacion}</p>
+          </>
+        ) : (
+          <p className="muted small">No está en el léxico: se añadió a mano.</p>
+        )}
+      </div>
+    </div>
+  );
+}
 
 // --- Pantalla de PIN --------------------------------------------------------
 
@@ -198,6 +279,7 @@ function Registrar({ datos, config, onGuardarEntries, onGuardarPeople }) {
   const [manual, setManual] = useState('');
   const [guardando, setGuardando] = useState(false);
   const [guardadoOk, setGuardadoOk] = useState(false);
+  const [verDefinicion, setVerDefinicion] = useState(null);
 
   const cambiarTipo = (t) => {
     setTipo(t);
@@ -388,15 +470,11 @@ function Registrar({ datos, config, onGuardarEntries, onGuardarPeople }) {
           {candidatos.length > 0 && (
             <div style={{ marginTop: 10 }}>
               {candidatos.map((c) => (
-                <span
-                  key={c.palabra}
-                  role="button" tabIndex={0}
-                  className={`chip${elegidos.has(c.palabra) ? ' on' : ''}`}
-                  onClick={() => alternar(c.palabra)}
-                  title={c.razon}
-                >
-                  {c.palabra}
-                </span>
+                <ChipCandidato
+                  key={c.palabra} palabra={c.palabra} razon={c.razon}
+                  seleccionado={elegidos.has(c.palabra)}
+                  onAlternar={alternar} onVerDefinicion={setVerDefinicion}
+                />
               ))}
             </div>
           )}
@@ -422,6 +500,7 @@ function Registrar({ datos, config, onGuardarEntries, onGuardarPeople }) {
       </button>
 
       {guardadoOk && <div className="toast">Guardada.</div>}
+      {verDefinicion && <DefinicionAdjetivo palabra={verDefinicion} onCerrar={() => setVerDefinicion(null)} />}
     </div>
   );
 }
@@ -569,6 +648,7 @@ function FichaPersona({ persona, entries, config, onGuardarEntries }) {
   const [manual, setManual] = useState('');
   const [guardando, setGuardando] = useState(false);
   const [guardadoOk, setGuardadoOk] = useState(false);
+  const [verDefinicion, setVerDefinicion] = useState(null);
 
   const adjetivos = perfil.fichaDePersona(entries, persona.id);
   const frases = perfil.frasesDePersona(entries, persona.id);
@@ -681,13 +761,11 @@ function FichaPersona({ persona, entries, config, onGuardarEntries }) {
       {candidatos.length > 0 && (
         <div style={{ marginTop: 8 }}>
           {candidatos.map((c) => (
-            <span
-              key={c.palabra} role="button" tabIndex={0}
-              className={`chip${elegidos.has(c.palabra) ? ' on' : ''}`}
-              onClick={() => alternar(c.palabra)} title={c.razon}
-            >
-              {c.palabra}
-            </span>
+            <ChipCandidato
+              key={c.palabra} palabra={c.palabra} razon={c.razon}
+              seleccionado={elegidos.has(c.palabra)}
+              onAlternar={alternar} onVerDefinicion={setVerDefinicion}
+            />
           ))}
         </div>
       )}
@@ -709,6 +787,7 @@ function FichaPersona({ persona, entries, config, onGuardarEntries }) {
         {guardando ? 'Guardando…' : 'Guardar'}
       </button>
       {guardadoOk && <div className="toast">Guardada.</div>}
+      {verDefinicion && <DefinicionAdjetivo palabra={verDefinicion} onCerrar={() => setVerDefinicion(null)} />}
     </div>
   );
 }
@@ -1167,6 +1246,7 @@ function PreguntarIA({ config, onGuardarConfig }) {
   const [candidatos, setCandidatos] = useState([]);
   const [elegidos, setElegidos] = useState(new Set());
   const [guardadoOk, setGuardadoOk] = useState(false);
+  const [verDefinicion, setVerDefinicion] = useState(null);
 
   const prioridadActual = new Set(config.estudioPrioridad || []);
 
@@ -1227,14 +1307,12 @@ function PreguntarIA({ config, onGuardarConfig }) {
         <>
           <div style={{ marginTop: 10 }}>
             {candidatos.map((c) => (
-              <span
-                key={c.palabra} role="button" tabIndex={0}
-                className={`chip${elegidos.has(c.palabra) ? ' on' : ''}`}
-                onClick={() => alternar(c.palabra)}
-                title={c.razon}
-              >
-                {c.palabra}{prioridadActual.has(c.palabra) ? ' ★' : ''}
-              </span>
+              <ChipCandidato
+                key={c.palabra} palabra={c.palabra} razon={c.razon}
+                seleccionado={elegidos.has(c.palabra)}
+                sufijo={prioridadActual.has(c.palabra) ? ' ★' : ''}
+                onAlternar={alternar} onVerDefinicion={setVerDefinicion}
+              />
             ))}
           </div>
           <button
@@ -1246,6 +1324,7 @@ function PreguntarIA({ config, onGuardarConfig }) {
           {guardadoOk && <span className="muted small" style={{ marginLeft: 10 }}>Guardado.</span>}
         </>
       )}
+      {verDefinicion && <DefinicionAdjetivo palabra={verDefinicion} onCerrar={() => setVerDefinicion(null)} />}
     </div>
   );
 }

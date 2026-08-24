@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { App } from '../src/main.jsx';
 import * as vault from '../src/lib/vault.js';
@@ -18,7 +18,7 @@ const irAMas = async (u, subEtiqueta) => {
   await u.click(screen.getByRole('button', { name: subEtiqueta }));
 };
 
-afterEach(() => { vi.unstubAllGlobals(); });
+afterEach(() => { vi.unstubAllGlobals(); vi.useRealTimers(); });
 
 describe('navegación básica', () => {
   beforeEach(() => { vault.cerrar(); localStorage.clear(); });
@@ -228,6 +228,82 @@ describe('Registrar (los cinco tipos)', () => {
     expect(screen.getByText('Impaciente')).toBeInTheDocument();
 
     expect(fetchEspia).toHaveBeenCalledTimes(1);
+  });
+
+  it('mantener pulsado un adjetivo sugerido enseña su definición, con ✕ para cerrarla', async () => {
+    const u = userEvent.setup();
+    const fetchEspia = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        content: [{
+          type: 'text',
+          text: JSON.stringify({
+            candidatos: [{ palabra: 'Extrovertido', razon: 'busca gente', confianza: 'alta' }],
+            aviso_estado: null,
+          }),
+        }],
+      }),
+    });
+    vi.stubGlobal('fetch', fetchEspia);
+
+    await entrar(u);
+    await irAMas(u, 'Ajustes');
+    await u.type(screen.getByLabelText(/Clave de Anthropic/), 'sk-ant-prueba');
+    await u.click(screen.getByRole('button', { name: 'Guardar clave' }));
+    await screen.findByText('Guardada.');
+
+    await u.click(screen.getByRole('button', { name: 'Registrar' }));
+    await u.type(screen.getByLabelText('Lo que te dijeron'), 'Se puso a hablar con todos en la fiesta');
+    await u.click(screen.getByRole('button', { name: 'Sugerir adjetivos' }));
+    const chip = await screen.findByText('Extrovertido');
+
+    vi.useFakeTimers();
+    fireEvent.pointerDown(chip);
+    act(() => { vi.advanceTimersByTime(500); });
+    vi.useRealTimers();
+
+    expect(await screen.findByText(/Se ve:/)).toBeInTheDocument();
+
+    // Soltar tras la definición no debe marcar el chip como elegido.
+    fireEvent.pointerUp(chip);
+    expect(chip).not.toHaveClass('on');
+
+    await u.click(screen.getByRole('button', { name: '✕' }));
+    expect(screen.queryByText(/Se ve:/)).toBeNull();
+  });
+
+  it('un toque corto (sin mantener pulsado) sigue marcando el adjetivo normalmente', async () => {
+    const u = userEvent.setup();
+    const fetchEspia = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        content: [{
+          type: 'text',
+          text: JSON.stringify({
+            candidatos: [{ palabra: 'Extrovertido', razon: 'r', confianza: 'alta' }],
+            aviso_estado: null,
+          }),
+        }],
+      }),
+    });
+    vi.stubGlobal('fetch', fetchEspia);
+
+    await entrar(u);
+    await irAMas(u, 'Ajustes');
+    await u.type(screen.getByLabelText(/Clave de Anthropic/), 'sk-ant-prueba');
+    await u.click(screen.getByRole('button', { name: 'Guardar clave' }));
+    await screen.findByText('Guardada.');
+
+    await u.click(screen.getByRole('button', { name: 'Registrar' }));
+    await u.type(screen.getByLabelText('Lo que te dijeron'), 'Se puso a hablar con todos en la fiesta');
+    await u.click(screen.getByRole('button', { name: 'Sugerir adjetivos' }));
+    const chip = await screen.findByText('Extrovertido');
+
+    await u.click(chip);
+    expect(chip).toHaveClass('on');
+    expect(screen.queryByText(/Se ve:/)).toBeNull();
   });
 
   it('sin clave guardada, avisa en vez de romperse', async () => {
