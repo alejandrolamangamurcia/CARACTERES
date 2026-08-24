@@ -264,6 +264,44 @@ describe('Registrar (los cinco tipos)', () => {
     expect(screen.getByText('Puse un límite')).toBeInTheDocument();
   });
 
+  it('la sugerencia de IA también funciona en Observación (y guarda los adjetivos elegidos)', async () => {
+    const u = userEvent.setup();
+    const fetchEspia = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        content: [{
+          type: 'text',
+          text: JSON.stringify({
+            candidatos: [{ palabra: 'Puntual', razon: 'llegó a tiempo', confianza: 'alta' }],
+            aviso_estado: null,
+          }),
+        }],
+      }),
+    });
+    vi.stubGlobal('fetch', fetchEspia);
+
+    await entrar(u);
+    await irAMas(u, 'Ajustes');
+    await u.type(screen.getByLabelText(/Clave de Anthropic/), 'sk-ant-prueba');
+    await u.click(screen.getByRole('button', { name: 'Guardar clave' }));
+    await screen.findByText('Guardada.');
+
+    await u.click(screen.getByRole('button', { name: 'Registrar' }));
+    await u.click(screen.getByRole('button', { name: 'Observación' }));
+    await u.type(screen.getByLabelText('Qué observaste'), 'Llegó puntual sin que nadie se lo pidiera');
+    await u.click(screen.getByRole('button', { name: 'Sugerir adjetivos' }));
+
+    const chip = await screen.findByText('Puntual');
+    await u.click(chip);
+    await u.click(screen.getByRole('button', { name: 'Guardar entrada' }));
+    await screen.findByText('Guardada.');
+
+    await u.click(screen.getByRole('button', { name: 'Entradas' }));
+    expect(screen.getByText('Llegó puntual sin que nadie se lo pidiera')).toBeInTheDocument();
+    expect(screen.getByText('Puntual')).toBeInTheDocument();
+  });
+
   it('registra un plan si→entonces y se puede marcar como cumplido desde Entradas', async () => {
     const u = userEvent.setup();
     await entrar(u);

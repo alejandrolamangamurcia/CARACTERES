@@ -256,11 +256,11 @@ function Registrar({ datos, config, onGuardarEntries, onGuardarPeople }) {
     if (tipo === 'medijeron') {
       entrada = { ...base, contextoFrase: contexto, frase: frase.trim(), adjetivos: [...elegidos] };
     } else if (tipo === 'roce') {
-      entrada = { ...base, respuesta, frase: frase.trim() };
+      entrada = { ...base, respuesta, frase: frase.trim(), adjetivos: [...elegidos] };
     } else if (tipo === 'plan') {
       entrada = { ...base, si: si.trim(), entonces: entonces.trim(), planEstado: 'activo' };
     } else {
-      entrada = { ...base, frase: frase.trim() };
+      entrada = { ...base, frase: frase.trim(), adjetivos: [...elegidos] };
     }
 
     await onGuardarEntries([...(datos.entries || []), entrada]);
@@ -372,7 +372,7 @@ function Registrar({ datos, config, onGuardarEntries, onGuardarPeople }) {
         </>
       )}
 
-      {tipo === 'medijeron' && (
+      {tipo !== 'plan' && (
         <>
           <button
             type="button" className="btn" style={{ marginTop: 10 }}
