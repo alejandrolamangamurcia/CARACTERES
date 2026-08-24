@@ -538,11 +538,156 @@ function ListaDicho({ titulo, lista }) {
   );
 }
 
-function Personas({ datos, onGuardarPeople }) {
+function FichaPersona({ persona, entries, config, onGuardarEntries }) {
+  const [texto, setTexto] = useState('');
+  const [pidiendo, setPidiendo] = useState(false);
+  const [error, setError] = useState('');
+  const [avisoEstado, setAvisoEstado] = useState(null);
+  const [candidatos, setCandidatos] = useState([]);
+  const [elegidos, setElegidos] = useState(new Set());
+  const [manual, setManual] = useState('');
+  const [guardando, setGuardando] = useState(false);
+  const [guardadoOk, setGuardadoOk] = useState(false);
+
+  const adjetivos = perfil.fichaDePersona(entries, persona.id);
+  const frases = perfil.frasesDePersona(entries, persona.id);
+
+  const pedirSugerencias = async () => {
+    if (!texto.trim()) return;
+    setPidiendo(true); setError(''); setAvisoEstado(null);
+    try {
+      const r = await sugerirAdjetivos(config.apiKey, texto.trim());
+      setCandidatos(r.candidatos || []);
+      setAvisoEstado(r.aviso_estado || null);
+      setElegidos(new Set());
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setPidiendo(false);
+    }
+  };
+
+  const alternar = (palabra) => {
+    setElegidos((prev) => {
+      const nuevo = new Set(prev);
+      if (nuevo.has(palabra)) nuevo.delete(palabra); else nuevo.add(palabra);
+      return nuevo;
+    });
+  };
+
+  const anadirManual = () => {
+    const palabra = manual.trim();
+    if (!palabra) return;
+    setElegidos((prev) => new Set(prev).add(palabra));
+    setManual('');
+  };
+
+  const guardar = async () => {
+    if (!texto.trim()) return;
+    setGuardando(true);
+    const entrada = {
+      id: uid(), tipo: 'observacion', ts: new Date().toISOString(), fechaEvento: hoyISO(),
+      conQuien: persona.id, frase: texto.trim(), adjetivos: [...elegidos],
+    };
+    await onGuardarEntries([...(entries || []), entrada]);
+    setGuardando(false);
+    setGuardadoOk(true);
+    setTimeout(() => setGuardadoOk(false), 2000);
+    setTexto(''); setCandidatos([]); setElegidos(new Set()); setAvisoEstado(null); setError('');
+  };
+
+  return (
+    <div className="card2" style={{ marginTop: 8, marginBottom: 8 }}>
+      <p className="muted small"><strong>Adjetivos que sostienen sus actos</strong></p>
+      {adjetivos.length === 0 && <p className="muted small">Todavía no hay nada registrado.</p>}
+      {adjetivos.map((a) => (
+        <div key={a.palabra} className="row">
+          <span className="grow">{a.palabra}</span>
+          <span className="muted small">{a.veces} vez{a.veces === 1 ? '' : 'es'}</span>
+        </div>
+      ))}
+
+      <hr className="sep" />
+
+      <label className="lbl" htmlFor={`frase-${persona.id}`}>Algo que dijo o hizo</label>
+      <textarea
+        id={`frase-${persona.id}`} className="fld"
+        value={texto} onChange={(e) => setTexto(e.target.value)}
+        placeholder="La frase o la conducta, literal"
+      />
+
+      <button
+        type="button" className="btn" style={{ marginTop: 8 }}
+        onClick={pedirSugerencias} disabled={!texto.trim() || pidiendo}
+      >
+        {pidiendo ? 'Pensando…' : 'Sugerir adjetivos'}
+      </button>
+
+      {error && <div className="aviso" role="alert">{error}</div>}
+      {avisoEstado && <div className="aviso">{avisoEstado}</div>}
+
+      {candidatos.length > 0 && (
+        <div style={{ marginTop: 8 }}>
+          {candidatos.map((c) => (
+            <span
+              key={c.palabra} role="button" tabIndex={0}
+              className={`chip${elegidos.has(c.palabra) ? ' on' : ''}`}
+              onClick={() => alternar(c.palabra)} title={c.razon}
+            >
+              {c.palabra}
+            </span>
+          ))}
+        </div>
+      )}
+
+      <div className="row" style={{ marginTop: 8 }}>
+        <input
+          className="fld grow" placeholder="Añadir otro adjetivo a mano"
+          value={manual} onChange={(e) => setManual(e.target.value)}
+        />
+        <button type="button" className="btn btn-sm" onClick={anadirManual}>Añadir adjetivo</button>
+      </div>
+
+      {elegidos.size > 0 && (
+        <p className="muted small" style={{ marginTop: 8 }}>
+          Elegidos: {[...elegidos].join(', ')}
+        </p>
+      )}
+
+      <button
+        type="button" className="btn btn-p btn-full" style={{ marginTop: 10 }}
+        onClick={guardar} disabled={guardando || !texto.trim()}
+      >
+        {guardando ? 'Guardando…' : 'Guardar'}
+      </button>
+      {guardadoOk && <div className="toast">Guardada.</div>}
+
+      {frases.length > 0 && (
+        <>
+          <hr className="sep" />
+          <p className="muted small"><strong>Frases registradas</strong></p>
+          {frases.map((f) => (
+            <div key={f.id} className="entry">
+              <p style={{ margin: 0 }}>{f.frase}</p>
+              <p className="muted small" style={{ margin: '4px 0 0' }}>
+                {f.fechaEvento || (f.ts || '').slice(0, 10)}
+                {f.adjetivos && f.adjetivos.length > 0 && ` · ${f.adjetivos.join(', ')}`}
+              </p>
+            </div>
+          ))}
+        </>
+      )}
+    </div>
+  );
+}
+
+function Personas({ datos, onGuardarPeople, onGuardarEntries }) {
   const { entries, people } = datos;
   const [nuevoNormal, setNuevoNormal] = useState('');
   const [nuevoTension, setNuevoTension] = useState('');
   const [nuevoIdeal, setNuevoIdeal] = useState('');
+  const [nuevaPersona, setNuevaPersona] = useState('');
+  const [personaAbierta, setPersonaAbierta] = useState(null);
 
   const dicho = perfil.loQueMeDicen(entries, people);
   const misNormal = perfil.misAdjetivos(people, perfil.PERFIL_NORMAL);
@@ -566,6 +711,15 @@ function Personas({ datos, onGuardarPeople }) {
   };
 
   const quitarIdeal = (palabra) => onGuardarPeople(perfil.quitarDelIdeal(people, palabra));
+
+  const crearPersona = async () => {
+    const nombre = nuevaPersona.trim();
+    if (!nombre) return;
+    const persona = { id: uid(), nombre };
+    await onGuardarPeople([...(people || []), persona]);
+    setNuevaPersona('');
+    setPersonaAbierta(persona.id);
+  };
 
   const otras = people.filter((p) => p.id !== 'yo');
   const entradasDe = (id) => entries.filter((e) => e.conQuien === id).length;
@@ -626,18 +780,42 @@ function Personas({ datos, onGuardarPeople }) {
         <button type="button" className="btn btn-sm" onClick={anadirIdeal}>Añadir al ideal</button>
       </div>
 
-      {otras.length > 0 && (
-        <>
-          <hr className="sep" />
-          <h3 style={{ marginBottom: 6 }}>Personas registradas</h3>
-          {otras.map((p) => (
-            <div key={p.id} className="row" style={{ marginBottom: 6 }}>
-              <span className="grow">{p.nombre}</span>
-              <span className="muted small">{entradasDe(p.id)} entrada{entradasDe(p.id) === 1 ? '' : 's'}</span>
-            </div>
-          ))}
-        </>
-      )}
+      <hr className="sep" />
+
+      <h3 style={{ marginBottom: 6 }}>Personas</h3>
+      <p className="muted small">
+        Cada persona tiene su ficha. Registra lo que dice o hace y la IA le saca los
+        adjetivos; no se escriben a mano, igual que en "Yo".
+      </p>
+
+      <div className="row" style={{ marginTop: 8 }}>
+        <input
+          className="fld grow" placeholder="Nombre o iniciales" value={nuevaPersona}
+          onChange={(e) => setNuevaPersona(e.target.value)}
+        />
+        <button type="button" className="btn btn-sm" onClick={crearPersona}>Añadir persona</button>
+      </div>
+
+      {otras.length === 0 && <p className="muted small" style={{ marginTop: 8 }}>Todavía no has añadido a nadie.</p>}
+
+      {otras.map((p) => (
+        <div key={p.id}>
+          <div
+            className="row" role="button" tabIndex={0}
+            style={{ marginTop: 8, cursor: 'pointer' }}
+            onClick={() => setPersonaAbierta(personaAbierta === p.id ? null : p.id)}
+          >
+            <span className="grow">{p.nombre}</span>
+            <span className="muted small">{entradasDe(p.id)} entrada{entradasDe(p.id) === 1 ? '' : 's'}</span>
+          </div>
+          {personaAbierta === p.id && (
+            <FichaPersona
+              persona={p} entries={entries} config={datos.config}
+              onGuardarEntries={onGuardarEntries}
+            />
+          )}
+        </div>
+      ))}
     </div>
   );
 }
@@ -1412,7 +1590,9 @@ export function App() {
             )}
           />
         )}
-        {vista === 'personas' && <Personas datos={datos} onGuardarPeople={guardarPeople} />}
+        {vista === 'personas' && (
+          <Personas datos={datos} onGuardarPeople={guardarPeople} onGuardarEntries={guardarEntries} />
+        )}
         {vista === 'guia' && <Guia />}
         {vista === 'mas' && (
           <Mas

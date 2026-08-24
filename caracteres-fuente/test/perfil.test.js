@@ -103,6 +103,45 @@ describe('mis apartados y mi ideal', () => {
   });
 });
 
+describe('la ficha de una persona (a partir de sus "Observación")', () => {
+  const obs = (id, quien, adjetivos, frase, cuando) => ({
+    id, tipo: 'observacion', conQuien: quien, adjetivos, frase, fechaEvento: cuando,
+  });
+
+  it('agrupa los adjetivos por frecuencia', () => {
+    const entries = [
+      obs('1', 'p1', ['Tozudo'], 'no dio su brazo a torcer', '2026-08-01'),
+      obs('2', 'p1', ['Tozudo', 'Generoso'], 'invitó a todos', '2026-08-05'),
+    ];
+    const ficha = P.fichaDePersona(entries, 'p1');
+    expect(ficha[0]).toMatchObject({ palabra: 'Tozudo', veces: 2 });
+    expect(ficha[1]).toMatchObject({ palabra: 'Generoso', veces: 1 });
+  });
+
+  it('cada adjetivo guarda de qué frase salió', () => {
+    const entries = [obs('1', 'p1', ['Tozudo'], 'no dio su brazo a torcer', '2026-08-01')];
+    const ficha = P.fichaDePersona(entries, 'p1');
+    expect(ficha[0].testimonios[0]).toMatchObject({ entryId: '1', frase: 'no dio su brazo a torcer' });
+  });
+
+  it('ignora entradas de otras personas o de otro tipo', () => {
+    const entries = [
+      obs('1', 'p2', ['Tozudo'], 'x', '2026-08-01'),
+      dijo('2', 'p1', ['Impaciente'], 'En calma', '2026-08-01'),
+    ];
+    expect(P.fichaDePersona(entries, 'p1')).toEqual([]);
+  });
+
+  it('lista las frases literales, más recientes primero', () => {
+    const entries = [
+      obs('1', 'p1', ['Tozudo'], 'primera', '2026-08-01'),
+      obs('2', 'p1', [], 'segunda', '2026-08-10'),
+    ];
+    const frases = P.frasesDePersona(entries, 'p1');
+    expect(frases.map((f) => f.frase)).toEqual(['segunda', 'primera']);
+  });
+});
+
 describe('estadísticas', () => {
   const entries = [
     dijo('1', 'p1', ['Tozudo'], 'En discusión', '2026-07-02'),

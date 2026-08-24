@@ -304,6 +304,81 @@ describe('Personas → Yo', () => {
   });
 });
 
+describe('la ficha de cada persona', () => {
+  beforeEach(() => { vault.cerrar(); localStorage.clear(); });
+
+  it('se añade una persona nueva desde la propia pestaña Personas', async () => {
+    const u = userEvent.setup();
+    await entrar(u);
+    await u.click(screen.getByRole('button', { name: 'Personas' }));
+
+    await u.type(screen.getByPlaceholderText('Nombre o iniciales'), 'Luis');
+    await u.click(screen.getByRole('button', { name: 'Añadir persona' }));
+
+    expect(await screen.findByText('Luis')).toBeInTheDocument();
+    // Al crearla se abre su ficha directamente.
+    expect(screen.getByText('Adjetivos que sostienen sus actos')).toBeInTheDocument();
+  });
+
+  it('registra una frase, la IA saca adjetivos y quedan en la ficha', async () => {
+    const u = userEvent.setup();
+    const fetchEspia = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        content: [{
+          type: 'text',
+          text: JSON.stringify({
+            candidatos: [{ palabra: 'Generoso', razon: 'invitó a todos', confianza: 'alta' }],
+            aviso_estado: null,
+          }),
+        }],
+      }),
+    });
+    vi.stubGlobal('fetch', fetchEspia);
+
+    await entrar(u);
+    await irAMas(u, 'Ajustes');
+    await u.type(screen.getByLabelText(/Clave de Anthropic/), 'sk-ant-prueba');
+    await u.click(screen.getByRole('button', { name: 'Guardar clave' }));
+    await screen.findByText('Guardada.');
+
+    await u.click(screen.getByRole('button', { name: 'Personas' }));
+    await u.type(screen.getByPlaceholderText('Nombre o iniciales'), 'Luis');
+    await u.click(screen.getByRole('button', { name: 'Añadir persona' }));
+
+    await u.type(screen.getByLabelText('Algo que dijo o hizo'), 'Invitó a toda la mesa sin que nadie se lo pidiera');
+    await u.click(screen.getByRole('button', { name: 'Sugerir adjetivos' }));
+
+    const chip = await screen.findByText('Generoso');
+    await u.click(chip);
+    expect(chip).toHaveClass('on');
+
+    await u.click(screen.getByRole('button', { name: 'Guardar' }));
+    await screen.findByText('Guardada.');
+
+    expect(screen.getByText('1 vez')).toBeInTheDocument();
+    expect(screen.getByText('Invitó a toda la mesa sin que nadie se lo pidiera')).toBeInTheDocument();
+    expect(fetchEspia).toHaveBeenCalledTimes(1);
+
+    // También aparece en el registro general de Entradas.
+    await u.click(screen.getByRole('button', { name: 'Entradas' }));
+    expect(screen.getByText('Invitó a toda la mesa sin que nadie se lo pidiera')).toBeInTheDocument();
+  });
+
+  it('sin clave guardada, avisa en la ficha en vez de romperse', async () => {
+    const u = userEvent.setup();
+    await entrar(u);
+    await u.click(screen.getByRole('button', { name: 'Personas' }));
+    await u.type(screen.getByPlaceholderText('Nombre o iniciales'), 'Luis');
+    await u.click(screen.getByRole('button', { name: 'Añadir persona' }));
+
+    await u.type(screen.getByLabelText('Algo que dijo o hizo'), 'Algo que hizo');
+    await u.click(screen.getByRole('button', { name: 'Sugerir adjetivos' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent(/clave/i);
+  });
+});
+
 describe('Estadísticas y Estudio', () => {
   beforeEach(() => { vault.cerrar(); localStorage.clear(); });
 

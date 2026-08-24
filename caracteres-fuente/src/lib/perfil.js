@@ -128,3 +128,45 @@ export function quitarDelIdeal(people, palabra) {
     ideal: (p.ideal || []).filter((x) => norm(x.palabra) !== norm(palabra)),
   }));
 }
+
+// --- La ficha de cada persona: igual que "lo que me dicen", pero de ellos --
+//
+// Misma regla que gobierna "Yo": no se escribe el adjetivo a mano, se
+// registra lo que dijo o hizo (entradas "Observación" con esa persona) y el
+// adjetivo sale de ahí.
+
+/**
+ * Adjetivos que sostienen los actos de una persona, con cuántas veces se
+ * han visto y en qué entradas. Ordenados por frecuencia.
+ */
+export function fichaDePersona(entries = [], personaId) {
+  const cubos = new Map();
+
+  for (const e of entries) {
+    if (e.tipo !== 'observacion' || e.conQuien !== personaId) continue;
+    for (const adj of e.adjetivos || []) {
+      const llave = norm(adj);
+      if (!cubos.has(llave)) cubos.set(llave, { palabra: adj, testimonios: [] });
+      cubos.get(llave).testimonios.push({
+        entryId: e.id,
+        frase: e.frase || '',
+        cuando: e.fechaEvento || e.ts,
+      });
+    }
+  }
+
+  return [...cubos.values()]
+    .map((c) => ({
+      palabra: c.palabra,
+      veces: c.testimonios.length,
+      testimonios: c.testimonios.sort((a, b) => String(b.cuando).localeCompare(String(a.cuando))),
+    }))
+    .sort((a, b) => b.veces - a.veces || a.palabra.localeCompare(b.palabra));
+}
+
+/** Las frases literales registradas de una persona, más recientes primero. */
+export function frasesDePersona(entries = [], personaId) {
+  return entries
+    .filter((e) => e.tipo === 'observacion' && e.conQuien === personaId)
+    .sort((a, b) => String(b.fechaEvento || b.ts || '').localeCompare(String(a.fechaEvento || a.ts || '')));
+}
