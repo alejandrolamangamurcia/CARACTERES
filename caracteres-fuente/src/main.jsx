@@ -845,8 +845,22 @@ function Repaso({ config, onGuardarConfig }) {
   const resumen = estudio.resumenEstudio(mazo, progreso);
   const falladas = estudio.masFalladas(mazo, progreso, 5);
 
+  // Palabras que la IA identificó en "Preguntar a la IA": van primero en el
+  // repaso, salvo que ya estén dominadas (caja alta), porque entonces ya no
+  // hace falta forzarlas.
+  const prioridad = config.estudioPrioridad || [];
+  const prioritarias = new Set(
+    prioridad.filter((palabra) => {
+      const t = mazo.find((m) => m.palabra === palabra);
+      const e = t && progreso[t.id];
+      return !(e && e.caja >= 4);
+    }),
+  );
+
+  const puedeEmpezar = resumen.pendientesHoy > 0 || prioritarias.size > 0;
+
   const empezar = () => {
-    setTanda(estudio.siguienteTanda(mazo, progreso, 10));
+    setTanda(estudio.siguienteTanda(mazo, progreso, 10, estudio.hoyISO(), prioritarias));
     setIndice(0);
     setResultado(null);
     setAciertosSesion(0);
@@ -877,7 +891,13 @@ function Repaso({ config, onGuardarConfig }) {
           {' '}{resumen.dominadas} dominadas de {resumen.total}
           {resumen.acierto != null && ` · ${Math.round(resumen.acierto * 100)}% de aciertos`}
         </p>
-        <button type="button" className="btn btn-p" onClick={empezar} disabled={resumen.pendientesHoy === 0}>
+        {prioritarias.size > 0 && (
+          <p className="muted small">
+            {prioritarias.size} palabra{prioritarias.size === 1 ? '' : 's'} con prioridad (de "Preguntar a la IA")
+            aparecerá{prioritarias.size === 1 ? '' : 'n'} primero.
+          </p>
+        )}
+        <button type="button" className="btn btn-p" onClick={empezar} disabled={!puedeEmpezar}>
           Empezar repaso
         </button>
         {falladas.length > 0 && (
@@ -929,6 +949,97 @@ function Repaso({ config, onGuardarConfig }) {
   );
 }
 
+function PreguntarIA({ config, onGuardarConfig }) {
+  const [texto, setTexto] = useState('');
+  const [pidiendo, setPidiendo] = useState(false);
+  const [error, setError] = useState('');
+  const [avisoEstado, setAvisoEstado] = useState(null);
+  const [candidatos, setCandidatos] = useState([]);
+  const [elegidos, setElegidos] = useState(new Set());
+  const [guardadoOk, setGuardadoOk] = useState(false);
+
+  const prioridadActual = new Set(config.estudioPrioridad || []);
+
+  const preguntar = async () => {
+    if (!texto.trim()) return;
+    setPidiendo(true); setError(''); setAvisoEstado(null);
+    try {
+      const r = await sugerirAdjetivos(config.apiKey, texto.trim());
+      setCandidatos(r.candidatos || []);
+      setAvisoEstado(r.aviso_estado || null);
+      setElegidos(new Set((r.candidatos || []).map((c) => c.palabra)));
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setPidiendo(false);
+    }
+  };
+
+  const alternar = (palabra) => {
+    setElegidos((prev) => {
+      const nuevo = new Set(prev);
+      if (nuevo.has(palabra)) nuevo.delete(palabra); else nuevo.add(palabra);
+      return nuevo;
+    });
+  };
+
+  const guardarPrioridad = async () => {
+    const combinado = new Set([...(config.estudioPrioridad || []), ...elegidos]);
+    await onGuardarConfig({ ...config, estudioPrioridad: [...combinado] });
+    setGuardadoOk(true);
+    setTimeout(() => setGuardadoOk(false), 2000);
+  };
+
+  return (
+    <div>
+      <p className="muted small">
+        Describe algo que hayas visto hacer o decir. La IA te dice qué adjetivos del léxico
+        encajan mejor. Los que marques aquí aparecerán antes en el repaso: son los que te
+        conviene aprender ya, porque son los que te estás encontrando en tu día a día.
+      </p>
+
+      <textarea
+        className="fld" value={texto} onChange={(e) => setTexto(e.target.value)}
+        placeholder="Por ejemplo: se pasó media hora explicando por qué no fue su culpa"
+      />
+
+      <button
+        type="button" className="btn" style={{ marginTop: 10 }}
+        onClick={preguntar} disabled={!texto.trim() || pidiendo}
+      >
+        {pidiendo ? 'Pensando…' : 'Buscar adjetivos'}
+      </button>
+
+      {error && <div className="aviso" role="alert">{error}</div>}
+      {avisoEstado && <div className="aviso">{avisoEstado}</div>}
+
+      {candidatos.length > 0 && (
+        <>
+          <div style={{ marginTop: 10 }}>
+            {candidatos.map((c) => (
+              <span
+                key={c.palabra} role="button" tabIndex={0}
+                className={`chip${elegidos.has(c.palabra) ? ' on' : ''}`}
+                onClick={() => alternar(c.palabra)}
+                title={c.razon}
+              >
+                {c.palabra}{prioridadActual.has(c.palabra) ? ' ★' : ''}
+              </span>
+            ))}
+          </div>
+          <button
+            type="button" className="btn btn-p" style={{ marginTop: 10 }}
+            onClick={guardarPrioridad} disabled={elegidos.size === 0}
+          >
+            Dar prioridad en el repaso
+          </button>
+          {guardadoOk && <span className="muted small" style={{ marginLeft: 10 }}>Guardado.</span>}
+        </>
+      )}
+    </div>
+  );
+}
+
 function Estudio({ config, onGuardarConfig }) {
   const [sub, setSub] = useState('repaso');
   return (
@@ -937,10 +1048,11 @@ function Estudio({ config, onGuardarConfig }) {
       <div className="subtabs">
         <span role="button" tabIndex={0} className={`chip${sub === 'repaso' ? ' on' : ''}`} onClick={() => setSub('repaso')}>Repasar</span>
         <span role="button" tabIndex={0} className={`chip${sub === 'lexico' ? ' on' : ''}`} onClick={() => setSub('lexico')}>Consultar léxico</span>
+        <span role="button" tabIndex={0} className={`chip${sub === 'ia' ? ' on' : ''}`} onClick={() => setSub('ia')}>Preguntar a la IA</span>
       </div>
-      {sub === 'repaso'
-        ? <Repaso config={config} onGuardarConfig={onGuardarConfig} />
-        : <ConsultarLexico />}
+      {sub === 'repaso' && <Repaso config={config} onGuardarConfig={onGuardarConfig} />}
+      {sub === 'lexico' && <ConsultarLexico />}
+      {sub === 'ia' && <PreguntarIA config={config} onGuardarConfig={onGuardarConfig} />}
     </div>
   );
 }

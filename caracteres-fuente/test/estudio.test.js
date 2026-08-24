@@ -99,3 +99,22 @@ describe('repetición espaciada', () => {
     expect(m[0].tarjeta.id).toBe(mazo[1].id);
   });
 });
+
+describe('prioridad manual (palabras que la IA identificó en una conducta real)', () => {
+  it('una palabra prioritaria sale primero aunque no le tocara todavía', () => {
+    let p = {};
+    // La dejamos "bien sabida", sin turno hoy.
+    let dia = new Date('2026-08-01');
+    for (let i = 0; i < 4; i++) { p = S.responder(p, mazo[0].id, true, S.hoyISO(dia)); dia = new Date(p[mazo[0].id].proxima); }
+    const hoy = '2026-08-10';
+    expect(S.toca(p[mazo[0].id], hoy)).toBe(false);
+
+    const tanda = S.siguienteTanda(mazo, p, 5, hoy, new Set([mazo[0].palabra]));
+    expect(tanda[0].id).toBe(mazo[0].id);
+  });
+
+  it('sin marcar nada, el comportamiento no cambia', () => {
+    const tanda = S.siguienteTanda(mazo, {}, 10, '2026-08-10');
+    expect(tanda).toHaveLength(10);
+  });
+});

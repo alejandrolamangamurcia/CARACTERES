@@ -289,12 +289,54 @@ describe('Estadísticas y Estudio', () => {
 
     const botonesConocidos = new Set([
       'Bloquear', 'Registrar', 'Entradas', 'Personas', 'Guía', 'Más',
-      'Estadísticas', 'Estudio', 'Ajustes', 'Repasar', 'Consultar léxico', 'Empezar repaso',
+      'Estadísticas', 'Estudio', 'Ajustes', 'Repasar', 'Consultar léxico',
+      'Preguntar a la IA', 'Empezar repaso',
     ]);
     const opciones = screen.getAllByRole('button').filter((b) => !botonesConocidos.has(b.textContent));
     expect(opciones.length).toBeGreaterThan(0);
     await u.click(opciones[0]);
 
     expect(await screen.findByRole('button', { name: /Siguiente|Terminar/ })).toBeInTheDocument();
+  });
+
+  it('preguntar a la IA por una conducta da prioridad a los adjetivos elegidos en el repaso', async () => {
+    const u = userEvent.setup();
+    const fetchEspia = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        content: [{
+          type: 'text',
+          text: JSON.stringify({
+            candidatos: [{ palabra: 'Extrovertido', razon: 'busca gente', confianza: 'alta' }],
+            aviso_estado: null,
+          }),
+        }],
+      }),
+    });
+    vi.stubGlobal('fetch', fetchEspia);
+
+    await entrar(u);
+    await irAMas(u, 'Ajustes');
+    await u.type(screen.getByLabelText(/Clave de Anthropic/), 'sk-ant-prueba');
+    await u.click(screen.getByRole('button', { name: 'Guardar clave' }));
+    await screen.findByText('Guardada.');
+
+    await irAMas(u, 'Estudio');
+    await u.click(screen.getByRole('button', { name: 'Preguntar a la IA' }));
+    await u.type(
+      screen.getByPlaceholderText(/se pasó media hora/),
+      'Se puso a hablar con todo el mundo en la fiesta',
+    );
+    await u.click(screen.getByRole('button', { name: 'Buscar adjetivos' }));
+
+    const chip = await screen.findByText('Extrovertido');
+    expect(chip).toHaveClass('on'); // preseleccionado
+
+    await u.click(screen.getByRole('button', { name: 'Dar prioridad en el repaso' }));
+    expect(await screen.findByText('Guardado.')).toBeInTheDocument();
+
+    await u.click(screen.getByRole('button', { name: 'Repasar' }));
+    expect(screen.getByText(/1 palabra con prioridad/)).toBeInTheDocument();
   });
 });

@@ -58,22 +58,29 @@ export function toca(estado, hoy = hoyISO()) {
 
 /**
  * Elige qué estudiar. Prioridad:
- *   1. Las que fallaste y ya toca repasar (caja baja primero)
- *   2. Las que nunca has visto
- *   3. El resto que vence hoy
+ *   1. Las marcadas como prioritarias (palabras que el usuario pidió a la IA
+ *      identificar en una conducta real: las necesita aprender ya, se salen
+ *      de su turno del Leitner)
+ *   2. Las que fallaste y ya toca repasar (caja baja primero)
+ *   3. Las que nunca has visto
+ *   4. El resto que vence hoy
  */
-export function siguienteTanda(mazo, progreso = {}, cantidad = 10, hoy = hoyISO()) {
+export function siguienteTanda(mazo, progreso = {}, cantidad = 10, hoy = hoyISO(), prioritarias = new Set()) {
   const conEstado = mazo.map((t) => ({ tarjeta: t, estado: progresoDe(progreso, t.id) }));
-  const vencidas = conEstado.filter((x) => toca(x.estado, hoy));
+  const candidatas = conEstado.filter((x) => toca(x.estado, hoy) || prioritarias.has(x.tarjeta.palabra));
 
   const peso = (x) => {
     const e = x.estado;
-    if (e.vistas === 0) return 1000 + Math.random();          // nuevas
-    const tasaFallo = e.vistas ? e.fallos / e.vistas : 0;
-    return 2000 + tasaFallo * 1000 - e.caja * 100 + Math.random(); // falladas primero
+    let base;
+    if (e.vistas === 0) base = 1000 + Math.random();          // nuevas
+    else {
+      const tasaFallo = e.vistas ? e.fallos / e.vistas : 0;
+      base = 2000 + tasaFallo * 1000 - e.caja * 100 + Math.random(); // falladas primero
+    }
+    return prioritarias.has(x.tarjeta.palabra) ? base + 10000 : base;
   };
 
-  return vencidas.sort((a, b) => peso(b) - peso(a)).slice(0, cantidad).map((x) => x.tarjeta);
+  return candidatas.sort((a, b) => peso(b) - peso(a)).slice(0, cantidad).map((x) => x.tarjeta);
 }
 
 /** Monta la pregunta: la situación y las opciones de su familia. */
