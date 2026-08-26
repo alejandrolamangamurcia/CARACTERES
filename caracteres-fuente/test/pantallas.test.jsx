@@ -608,9 +608,7 @@ describe('la ficha de cada persona', () => {
     await u.type(screen.getByPlaceholderText('Nombre o iniciales'), 'Luis');
     await u.click(screen.getByRole('button', { name: 'Añadir persona' }));
 
-    // Hay dos toggles "Hizo o gesto": el de Tendencias y el de "Añadir algo nuevo" (este último).
-    const togglesGesto = screen.getAllByRole('button', { name: 'Hizo o gesto' });
-    await u.click(togglesGesto[togglesGesto.length - 1]);
+    await u.selectOptions(screen.getByLabelText('Tipo de entrada'), 'Hizo o gesto');
     await u.type(
       screen.getByLabelText('Añadir algo nuevo'),
       'Puso los ojos en blanco cuando le llevé la contraria',
@@ -623,6 +621,30 @@ describe('la ficha de cada persona', () => {
     expect(screen.getByText(/Gesto: Puso los ojos en blanco/)).toBeInTheDocument();
   });
 
+  it('un gesto deja elegir cómo te hizo sentir, y queda a la vista en la entrada', async () => {
+    const u = userEvent.setup();
+    await entrar(u);
+    await u.click(screen.getByRole('button', { name: 'Personas' }));
+    await u.type(screen.getByPlaceholderText('Nombre o iniciales'), 'Luis');
+    await u.click(screen.getByRole('button', { name: 'Añadir persona' }));
+
+    // Con "Dijo" (por defecto) no aparece el selector de sentir.
+    expect(screen.queryByText('Cómo me hizo sentir')).toBeNull();
+
+    await u.selectOptions(screen.getByLabelText('Tipo de entrada'), 'Hizo o gesto');
+    expect(screen.getByText('Cómo me hizo sentir')).toBeInTheDocument();
+    await u.click(screen.getByRole('button', { name: 'Mal' }));
+
+    await u.type(screen.getByLabelText('Añadir algo nuevo'), 'Dio un portazo al salir');
+    await u.type(screen.getByPlaceholderText('Añadir otro adjetivo a mano'), 'Impulsivo');
+    await u.click(screen.getByRole('button', { name: 'Añadir adjetivo' }));
+    await u.click(screen.getByRole('button', { name: 'Guardar' }));
+    await screen.findByText('Guardada.');
+
+    expect(screen.getByText(/Dio un portazo al salir/)).toBeInTheDocument();
+    expect(screen.getByText(/· Mal/)).toBeInTheDocument();
+  });
+
   it('separa los adjetivos en calma y en discusión según el contexto', async () => {
     const u = userEvent.setup();
     await entrar(u);
@@ -630,9 +652,7 @@ describe('la ficha de cada persona', () => {
     await u.type(screen.getByPlaceholderText('Nombre o iniciales'), 'Luis');
     await u.click(screen.getByRole('button', { name: 'Añadir persona' }));
 
-    // Hay dos selects "Contexto": el de Tendencias y el de "Añadir algo nuevo" (este último).
-    const selectsContexto = screen.getAllByLabelText('Contexto');
-    const selectPrincipal = selectsContexto[selectsContexto.length - 1];
+    const selectContexto = screen.getByLabelText('Contexto');
 
     // Por defecto ya es "En discusión" (primera opción de la lista).
     await u.type(screen.getByLabelText('Añadir algo nuevo'), 'Contestó de malas formas');
@@ -642,7 +662,7 @@ describe('la ficha de cada persona', () => {
     await screen.findByText('Guardada.');
 
     // La segunda, explícitamente en calma.
-    await u.selectOptions(selectPrincipal, 'En calma');
+    await u.selectOptions(selectContexto, 'En calma');
     await u.type(screen.getByLabelText('Añadir algo nuevo'), 'Ayudó sin que se lo pidieran');
     await u.type(screen.getByPlaceholderText('Añadir otro adjetivo a mano'), 'Generoso');
     await u.click(screen.getByRole('button', { name: 'Añadir adjetivo' }));
@@ -707,12 +727,13 @@ describe('la ficha de cada persona', () => {
     await u.type(screen.getByPlaceholderText('Nombre o iniciales'), 'Luis');
     await u.click(screen.getByRole('button', { name: 'Añadir persona' }));
 
-    await u.type(screen.getByLabelText('Añadir frase suelta'), 'La confundió con su ex en la fiesta');
-    await u.click(screen.getByRole('button', { name: 'Guardar en tendencias' }));
+    // Se dejan sin adjetivo: caen en Tendencias en vez de en la ficha etiquetada.
+    await u.type(screen.getByLabelText('Añadir algo nuevo'), 'La confundió con su ex en la fiesta');
+    await u.click(screen.getByRole('button', { name: 'Guardar' }));
     await screen.findByText('Guardada.');
 
-    await u.type(screen.getByLabelText('Añadir frase suelta'), 'Otra vez la llamó por el nombre de su ex');
-    await u.click(screen.getByRole('button', { name: 'Guardar en tendencias' }));
+    await u.type(screen.getByLabelText('Añadir algo nuevo'), 'Otra vez la llamó por el nombre de su ex');
+    await u.click(screen.getByRole('button', { name: 'Guardar' }));
     await screen.findByText('Guardada.');
 
     expect(screen.getByText(/La confundió con su ex en la fiesta/)).toBeInTheDocument();

@@ -714,6 +714,7 @@ function EntradaRegistrada({ entrada, abierta, onAbrir, onQuitarAdjetivo, onBorr
         <p className="muted small" style={{ margin: '4px 0 0' }}>
           {entrada.fechaEvento || (entrada.ts || '').slice(0, 10)}
           {entrada.contextoFrase && ` · ${entrada.contextoFrase}`}
+          {entrada.sentir && ` · ${entrada.sentir === 'mal' ? 'Mal' : 'Bien'}`}
           {entrada.adjetivos && entrada.adjetivos.length > 0 && ` · ${entrada.adjetivos.join(', ')}`}
         </p>
       </div>
@@ -740,11 +741,6 @@ function EntradaRegistrada({ entrada, abierta, onAbrir, onQuitarAdjetivo, onBorr
 
 /** Frases sueltas sin adjetivo. Cuando varias apuntan al mismo rasgo, la IA lo señala como patrón. */
 function TendenciasPersona({ persona, entries, config, onGuardarEntries }) {
-  const [modo, setModo] = useState('dijo');
-  const [contexto, setContexto] = useState(constantes.lf[0]);
-  const [texto, setTexto] = useState('');
-  const [guardando, setGuardando] = useState(false);
-  const [guardadoOk, setGuardadoOk] = useState(false);
   const [analizando, setAnalizando] = useState(false);
   const [errorPatron, setErrorPatron] = useState('');
   const [patrones, setPatrones] = useState(null);
@@ -753,21 +749,6 @@ function TendenciasPersona({ persona, entries, config, onGuardarEntries }) {
 
   const tendencias = perfil.tendenciasDePersona(entries, persona.id);
   const fraseDe = (id) => (tendencias.find((t) => t.id === id) || {}).frase || '';
-
-  const guardarTendencia = async () => {
-    if (!texto.trim()) return;
-    setGuardando(true);
-    const entrada = {
-      id: uid(), tipo: 'observacion', ts: new Date().toISOString(), fechaEvento: hoyISO(),
-      conQuien: persona.id, modo, contextoFrase: contexto, frase: texto.trim(),
-      adjetivos: [], tendencia: true,
-    };
-    await onGuardarEntries([...(entries || []), entrada]);
-    setGuardando(false);
-    setGuardadoOk(true);
-    setTimeout(() => setGuardadoOk(false), 2000);
-    setTexto('');
-  };
 
   const borrarTendencia = (id) => onGuardarEntries(entries.filter((e) => e.id !== id));
 
@@ -795,8 +776,11 @@ function TendenciasPersona({ persona, entries, config, onGuardarEntries }) {
     setPatrones((prev) => (prev || []).filter((p) => p.palabra !== patron.palabra));
   };
 
+  if (tendencias.length === 0 && !patrones) return null;
+
   return (
     <div>
+      <hr className="sep" />
       <p className="muted small"><strong>Tendencias</strong></p>
       <p className="muted small">
         Frases sueltas, sin adjetivo. Un hecho puntual no cuenta; cuando varias frases distintas
@@ -804,7 +788,6 @@ function TendenciasPersona({ persona, entries, config, onGuardarEntries }) {
         adjetivo con varias pruebas detrás, no con una sola.
       </p>
 
-      {tendencias.length === 0 && <p className="muted small">Nada todavía.</p>}
       {tendencias.map((t) => (
         <div key={t.id} className="entry">
           <div className="row">
@@ -814,7 +797,9 @@ function TendenciasPersona({ persona, entries, config, onGuardarEntries }) {
             <button type="button" className="btn btn-sm" onClick={() => borrarTendencia(t.id)}>✕</button>
           </div>
           <p className="muted small" style={{ margin: '4px 0 0' }}>
-            {t.fechaEvento || (t.ts || '').slice(0, 10)}{t.contextoFrase && ` · ${t.contextoFrase}`}
+            {t.fechaEvento || (t.ts || '').slice(0, 10)}
+            {t.contextoFrase && ` · ${t.contextoFrase}`}
+            {t.sentir && ` · ${t.sentir === 'mal' ? 'Mal' : 'Bien'}`}
           </p>
         </div>
       ))}
@@ -858,40 +843,6 @@ function TendenciasPersona({ persona, entries, config, onGuardarEntries }) {
           </button>
         </div>
       ))}
-
-      <hr className="sep" />
-
-      <label className="lbl" htmlFor={`tendencia-${persona.id}`}>Añadir frase suelta</label>
-      <div className="row" style={{ marginBottom: 8 }}>
-        {MODOS_REGISTRO.map((m) => (
-          <span
-            key={m.v} role="button" tabIndex={0}
-            className={`chip${modo === m.v ? ' on' : ''}`}
-            onClick={() => setModo(m.v)}
-          >
-            {m.l}
-          </span>
-        ))}
-      </div>
-      <label className="lbl" htmlFor={`contexto-tendencia-${persona.id}`}>Contexto</label>
-      <select
-        id={`contexto-tendencia-${persona.id}`} className="fld" style={{ marginBottom: 8 }}
-        value={contexto} onChange={(e) => setContexto(e.target.value)}
-      >
-        {constantes.lf.map((c) => <option key={c} value={c}>{c}</option>)}
-      </select>
-      <textarea
-        id={`tendencia-${persona.id}`} className="fld"
-        value={texto} onChange={(e) => setTexto(e.target.value)}
-        placeholder="Sin adjetivo todavía: solo la frase o el gesto"
-      />
-      <button
-        type="button" className="btn btn-p" style={{ marginTop: 8 }}
-        onClick={guardarTendencia} disabled={guardando || !texto.trim()}
-      >
-        {guardando ? 'Guardando…' : 'Guardar en tendencias'}
-      </button>
-      {guardadoOk && <div className="toast">Guardada.</div>}
       {verDefinicion && <DefinicionAdjetivo palabra={verDefinicion} onCerrar={() => setVerDefinicion(null)} />}
     </div>
   );
@@ -900,6 +851,7 @@ function TendenciasPersona({ persona, entries, config, onGuardarEntries }) {
 function FichaPersona({ persona, entries, config, onGuardarEntries }) {
   const [modo, setModo] = useState('dijo');
   const [contexto, setContexto] = useState(constantes.lf[0]);
+  const [sentir, setSentir] = useState('bien');
   const [texto, setTexto] = useState('');
   const [pidiendo, setPidiendo] = useState(false);
   const [error, setError] = useState('');
@@ -954,6 +906,8 @@ function FichaPersona({ persona, entries, config, onGuardarEntries }) {
     const entrada = {
       id: uid(), tipo: 'observacion', ts: new Date().toISOString(), fechaEvento: hoyISO(),
       conQuien: persona.id, modo, contextoFrase: contexto, frase: texto.trim(), adjetivos: [...elegidos],
+      ...(modo === 'gesto' ? { sentir } : {}),
+      ...(elegidos.size === 0 ? { tendencia: true } : {}),
     };
     await onGuardarEntries([...(entries || []), entrada]);
     setGuardando(false);
@@ -1011,25 +965,26 @@ function FichaPersona({ persona, entries, config, onGuardarEntries }) {
         </>
       )}
 
-      <hr className="sep" />
       <TendenciasPersona
         persona={persona} entries={entries} config={config} onGuardarEntries={onGuardarEntries}
       />
 
       <hr className="sep" />
 
-      <label className="lbl" htmlFor={`frase-${persona.id}`}>Añadir algo nuevo</label>
-      <div className="row" style={{ marginBottom: 8 }}>
-        {MODOS_REGISTRO.map((m) => (
-          <span
-            key={m.v} role="button" tabIndex={0}
-            className={`chip${modo === m.v ? ' on' : ''}`}
-            onClick={() => setModo(m.v)}
-          >
-            {m.l}
-          </span>
-        ))}
-      </div>
+      <p className="muted small">
+        Una sola entrada para todo: elige el tipo, cuéntalo, y si le pones al menos un
+        adjetivo se guarda ya etiquetada. Si la dejas sin adjetivo, queda en Tendencias a la
+        espera de que otra frase parecida confirme el patrón.
+      </p>
+
+      <label className="lbl" htmlFor={`tipo-${persona.id}`}>Tipo de entrada</label>
+      <select
+        id={`tipo-${persona.id}`} className="fld" style={{ marginBottom: 8 }}
+        value={modo} onChange={(e) => setModo(e.target.value)}
+      >
+        {MODOS_REGISTRO.map((m) => <option key={m.v} value={m.v}>{m.l}</option>)}
+      </select>
+
       <label className="lbl" htmlFor={`contexto-${persona.id}`}>Contexto</label>
       <select
         id={`contexto-${persona.id}`} className="fld" style={{ marginBottom: 8 }}
@@ -1037,6 +992,32 @@ function FichaPersona({ persona, entries, config, onGuardarEntries }) {
       >
         {constantes.lf.map((c) => <option key={c} value={c}>{c}</option>)}
       </select>
+
+      {modo === 'gesto' && (
+        <>
+          <label className="lbl">Cómo me hizo sentir</label>
+          <div className="row" style={{ marginBottom: 8 }}>
+            <span
+              role="button" tabIndex={0}
+              className={`chip${sentir === 'bien' ? ' on' : ''}`}
+              style={sentir === 'bien' ? { borderColor: 'var(--ok)', color: 'var(--ok)' } : undefined}
+              onClick={() => setSentir('bien')}
+            >
+              Bien
+            </span>
+            <span
+              role="button" tabIndex={0}
+              className={`chip${sentir === 'mal' ? ' on' : ''}`}
+              style={sentir === 'mal' ? { borderColor: 'var(--bad)', color: 'var(--bad)' } : undefined}
+              onClick={() => setSentir('mal')}
+            >
+              Mal
+            </span>
+          </div>
+        </>
+      )}
+
+      <label className="lbl" htmlFor={`frase-${persona.id}`}>Añadir algo nuevo</label>
       <textarea
         id={`frase-${persona.id}`} className="fld"
         value={texto} onChange={(e) => setTexto(e.target.value)}
