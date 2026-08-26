@@ -106,7 +106,10 @@ function DefinicionAdjetivo({ palabra, onCerrar }) {
           <>
             <p className="muted small">{info.dimension} · {info.polo} · {info.familia}</p>
             <p className="small">{info.definicion}</p>
-            <p className="muted small" style={{ marginTop: 8 }}>Se ve: {info.situacion}</p>
+            <p className="muted small" style={{ marginTop: 8, marginBottom: 2 }}>Se ve:</p>
+            {(Array.isArray(info.situacion) ? info.situacion : [info.situacion]).map((s, i) => (
+              <p key={i} className="muted small" style={{ margin: '2px 0' }}>· {s}</p>
+            ))}
           </>
         ) : (
           <p className="muted small">No está en el léxico: se añadió a mano.</p>
@@ -1454,7 +1457,10 @@ function ConsultarLexico() {
         <div className="card2" style={{ marginTop: 12 }}>
           <strong>{actual.p}</strong>
           <p className="small" style={{ margin: '6px 0 0' }}>{actual.d}</p>
-          <p className="muted small" style={{ marginTop: 6 }}>Se ve: {actual.v}</p>
+          <p className="muted small" style={{ marginTop: 6, marginBottom: 2 }}>Se ve:</p>
+          {(Array.isArray(actual.v) ? actual.v : [actual.v]).map((s, i) => (
+            <p key={i} className="muted small" style={{ margin: '2px 0' }}>· {s}</p>
+          ))}
         </div>
       )}
     </div>

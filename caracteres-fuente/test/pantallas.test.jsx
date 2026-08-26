@@ -265,6 +265,10 @@ describe('Registrar (los cinco tipos)', () => {
     vi.useRealTimers();
 
     expect(await screen.findByText(/Se ve:/)).toBeInTheDocument();
+    // Trae tres ejemplos, no uno solo.
+    expect(screen.getByText(/con más energía de la que entró/)).toBeInTheDocument();
+    expect(screen.getByText(/antes de que el grupo se haya despedido/)).toBeInTheDocument();
+    expect(screen.getByText(/un viaje sin planes de gente nueva/)).toBeInTheDocument();
 
     // Soltar tras la definición no debe marcar el chip como elegido.
     fireEvent.pointerUp(chip);
@@ -825,6 +829,11 @@ describe('Estadísticas y Estudio', () => {
     expect(textoSeleccionado('Familia')).toBe('fondo moral');
     expect(textoSeleccionado('Adjetivo')).toBe('Sensato');
     expect(screen.getByText(/toma decisiones razonables/)).toBeInTheDocument();
+
+    // El "Se ve:" trae tres ejemplos, no uno solo.
+    expect(screen.getByText(/pensemos esto con calma/)).toBeInTheDocument();
+    expect(screen.getByText(/la opción menos vistosa/)).toBeInTheDocument();
+    expect(screen.getByText(/el entusiasmo del grupo/)).toBeInTheDocument();
   });
 
   it('buscar un adjetivo que no existe avisa en vez de romperse', async () => {

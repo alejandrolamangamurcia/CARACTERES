@@ -31,6 +31,24 @@ describe('el mazo sale del léxico real', () => {
     for (const o of p.opciones) expect(t.hermanas).toContain(o);
   });
 
+  it('cada tarjeta trae tres ejemplos de "Se ve:", no uno solo', () => {
+    for (const t of mazo) {
+      expect(Array.isArray(t.situacion)).toBe(true);
+      expect(t.situacion).toHaveLength(3);
+    }
+  });
+
+  it('la pregunta muestra un solo ejemplo, elegido al azar entre los tres', () => {
+    const t = mazo[0];
+    const vistos = new Set();
+    for (let i = 0; i < 20; i++) {
+      const p = S.montarPregunta(t, () => i / 20);
+      expect(t.situacion).toContain(p.situacion);
+      vistos.add(p.situacion);
+    }
+    expect(vistos.size).toBeGreaterThan(1);
+  });
+
   it('no hay tarjetas sin alternativas', () => {
     const solitarias = mazo.filter((t) => t.hermanas.length < 2);
     expect(solitarias.map((t) => `${t.familia}/${t.palabra}`)).toEqual([]);

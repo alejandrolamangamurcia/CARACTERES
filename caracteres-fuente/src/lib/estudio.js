@@ -83,18 +83,22 @@ export function siguienteTanda(mazo, progreso = {}, cantidad = 10, hoy = hoyISO(
   return candidatas.sort((a, b) => peso(b) - peso(a)).slice(0, cantidad).map((x) => x.tarjeta);
 }
 
-/** Monta la pregunta: la situación y las opciones de su familia. */
+/** Monta la pregunta: la situación y las opciones de su familia.
+ *  Cada tarjeta trae varios "Se ve:" posibles; se elige uno al azar en cada
+ *  pregunta para que el mismo repaso no enseñe siempre el mismo ejemplo. */
 export function montarPregunta(tarjeta, aleatorio = Math.random) {
   const opciones = [...tarjeta.hermanas];
   for (let i = opciones.length - 1; i > 0; i--) {
     const j = Math.floor(aleatorio() * (i + 1));
     [opciones[i], opciones[j]] = [opciones[j], opciones[i]];
   }
+  const ejemplos = Array.isArray(tarjeta.situacion) ? tarjeta.situacion : [tarjeta.situacion];
+  const situacion = ejemplos[Math.floor(aleatorio() * ejemplos.length)];
   return {
     id: tarjeta.id,
     categoria: tarjeta.dimension,
     familia: tarjeta.familia,
-    situacion: tarjeta.situacion,
+    situacion,
     definicion: tarjeta.definicion,
     opciones,
     correcta: tarjeta.palabra,

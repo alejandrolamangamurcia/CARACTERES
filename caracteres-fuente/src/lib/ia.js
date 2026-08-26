@@ -18,7 +18,7 @@ function listaLexico() {
     for (const polo of dim.polos) {
       for (const familia of polo.familias) {
         for (const e of familia.entradas) {
-          lineas.push(`${e.p} [${dim.titulo}/${polo.nombre}] — ${e.d} | Se ve: ${e.v}`);
+          lineas.push(`${e.p} [${dim.titulo}/${polo.nombre}] — ${e.d} | Se ve: ${e.v[0]}`);
         }
       }
     }
