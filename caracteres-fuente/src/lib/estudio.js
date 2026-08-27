@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // ESTUDIO (repetición espaciada, estilo Anki)
 //
-// Pregunta: se te da la categoría, la familia y la situación ("Se ve: ...")
+// Pregunta: se te da la categoría, la familia y las situaciones ("Ejemplo: ...")
 // y eliges entre los adjetivos de ESA MISMA familia. Los señuelos salen de la
 // familia porque son palabras casi iguales: distinguir "curioso" de "ávido"
 // enseña; distinguir "curioso" de "tacaño" no enseña nada.
@@ -83,22 +83,21 @@ export function siguienteTanda(mazo, progreso = {}, cantidad = 10, hoy = hoyISO(
   return candidatas.sort((a, b) => peso(b) - peso(a)).slice(0, cantidad).map((x) => x.tarjeta);
 }
 
-/** Monta la pregunta: la situación y las opciones de su familia.
- *  Cada tarjeta trae varios "Se ve:" posibles; se elige uno al azar en cada
- *  pregunta para que el mismo repaso no enseñe siempre el mismo ejemplo. */
+/** Monta la pregunta: las situaciones y las opciones de su familia.
+ *  Cada tarjeta trae tres ejemplos de "Ejemplo:"; la pregunta los muestra todos
+ *  para dar más contexto al adivinar el adjetivo. */
 export function montarPregunta(tarjeta, aleatorio = Math.random) {
   const opciones = [...tarjeta.hermanas];
   for (let i = opciones.length - 1; i > 0; i--) {
     const j = Math.floor(aleatorio() * (i + 1));
     [opciones[i], opciones[j]] = [opciones[j], opciones[i]];
   }
-  const ejemplos = Array.isArray(tarjeta.situacion) ? tarjeta.situacion : [tarjeta.situacion];
-  const situacion = ejemplos[Math.floor(aleatorio() * ejemplos.length)];
+  const situaciones = Array.isArray(tarjeta.situacion) ? tarjeta.situacion : [tarjeta.situacion];
   return {
     id: tarjeta.id,
     categoria: tarjeta.dimension,
     familia: tarjeta.familia,
-    situacion,
+    situaciones,
     definicion: tarjeta.definicion,
     opciones,
     correcta: tarjeta.palabra,

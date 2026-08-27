@@ -15,7 +15,7 @@ const uid = () => crypto.randomUUID();
 const hoyISO = () => new Date().toISOString().slice(0, 10);
 const nombreDe = (people, id) => (people.find((p) => p.id === id) || {}).nombre || 'Sin identificar';
 
-// --- Buscar un adjetivo en el léxico (definición y "Se ve:") -----------------
+// --- Buscar un adjetivo en el léxico (definición y "Ejemplo:") ---------------
 
 let indiceLexico = null;
 function buscarEnLexico(palabra) {
@@ -92,7 +92,7 @@ function ChipCandidato({ palabra, seleccionado, razon, sufijo, onAlternar, onVer
   );
 }
 
-/** El recuadro con la definición y el "Se ve:" de un adjetivo, con su ✕ para cerrarlo. */
+/** El recuadro con la definición y el "Ejemplo:" de un adjetivo, con su ✕ para cerrarlo. */
 function DefinicionAdjetivo({ palabra, onCerrar }) {
   const info = buscarEnLexico(palabra);
   return (
@@ -106,7 +106,7 @@ function DefinicionAdjetivo({ palabra, onCerrar }) {
           <>
             <p className="muted small">{info.dimension} · {info.polo} · {info.familia}</p>
             <p className="small">{info.definicion}</p>
-            <p className="muted small" style={{ marginTop: 8, marginBottom: 2 }}>Se ve:</p>
+            <p className="muted small" style={{ marginTop: 8, marginBottom: 2 }}>Ejemplo:</p>
             {(Array.isArray(info.situacion) ? info.situacion : [info.situacion]).map((s, i) => (
               <p key={i} className="muted small" style={{ margin: '2px 0' }}>· {s}</p>
             ))}
@@ -1457,7 +1457,7 @@ function ConsultarLexico() {
         <div className="card2" style={{ marginTop: 12 }}>
           <strong>{actual.p}</strong>
           <p className="small" style={{ margin: '6px 0 0' }}>{actual.d}</p>
-          <p className="muted small" style={{ marginTop: 6, marginBottom: 2 }}>Se ve:</p>
+          <p className="muted small" style={{ marginTop: 6, marginBottom: 2 }}>Ejemplo:</p>
           {(Array.isArray(actual.v) ? actual.v : [actual.v]).map((s, i) => (
             <p key={i} className="muted small" style={{ margin: '2px 0' }}>· {s}</p>
           ))}
@@ -1553,7 +1553,10 @@ function Repaso({ config, onGuardarConfig }) {
       <p className="muted small">{indice + 1} de {tanda.length} · aciertos: {aciertosSesion}</p>
       <div className="card2">
         <p className="muted small">{pregunta.categoria} · {pregunta.familia}</p>
-        <p className="small" style={{ margin: '6px 0 0' }}>Se ve: {pregunta.situacion}</p>
+        <p className="muted small" style={{ margin: '6px 0 2px' }}>Ejemplo:</p>
+        {pregunta.situaciones.map((s, i) => (
+          <p key={i} className="small" style={{ margin: '2px 0' }}>· {s}</p>
+        ))}
       </div>
 
       {!resultado ? (

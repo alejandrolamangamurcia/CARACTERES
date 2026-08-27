@@ -264,7 +264,7 @@ describe('Registrar (los cinco tipos)', () => {
     act(() => { vi.advanceTimersByTime(500); });
     vi.useRealTimers();
 
-    expect(await screen.findByText(/Se ve:/)).toBeInTheDocument();
+    expect(await screen.findByText(/Ejemplo:/)).toBeInTheDocument();
     // Trae tres ejemplos, no uno solo.
     expect(screen.getByText(/con más energía de la que entró/)).toBeInTheDocument();
     expect(screen.getByText(/antes de que el grupo se haya despedido/)).toBeInTheDocument();
@@ -275,7 +275,7 @@ describe('Registrar (los cinco tipos)', () => {
     expect(chip).not.toHaveClass('on');
 
     await u.click(screen.getByRole('button', { name: '✕' }));
-    expect(screen.queryByText(/Se ve:/)).toBeNull();
+    expect(screen.queryByText(/Ejemplo:/)).toBeNull();
   });
 
   it('un toque corto (sin mantener pulsado) sigue marcando el adjetivo normalmente', async () => {
@@ -308,7 +308,7 @@ describe('Registrar (los cinco tipos)', () => {
 
     await u.click(chip);
     expect(chip).toHaveClass('on');
-    expect(screen.queryByText(/Se ve:/)).toBeNull();
+    expect(screen.queryByText(/Ejemplo:/)).toBeNull();
   });
 
   it('sin clave guardada, avisa en vez de romperse', async () => {
@@ -808,7 +808,7 @@ describe('Estadísticas y Estudio', () => {
     await irAMas(u, 'Estudio');
     await u.click(screen.getByRole('button', { name: 'Consultar léxico' }));
     expect(screen.getByLabelText('Dimensión')).toBeInTheDocument();
-    expect(screen.getByText('Se ve:', { exact: false })).toBeInTheDocument();
+    expect(screen.getByText('Ejemplo:', { exact: false })).toBeInTheDocument();
   });
 
   it('se puede buscar un adjetivo directamente y salta a su sitio en los desplegables', async () => {
@@ -830,7 +830,7 @@ describe('Estadísticas y Estudio', () => {
     expect(textoSeleccionado('Adjetivo')).toBe('Sensato');
     expect(screen.getByText(/toma decisiones razonables/)).toBeInTheDocument();
 
-    // El "Se ve:" trae tres ejemplos, no uno solo.
+    // El "Ejemplo:" trae tres ejemplos, no uno solo.
     expect(screen.getByText(/pensemos esto con calma/)).toBeInTheDocument();
     expect(screen.getByText(/la opción menos vistosa/)).toBeInTheDocument();
     expect(screen.getByText(/el entusiasmo del grupo/)).toBeInTheDocument();
