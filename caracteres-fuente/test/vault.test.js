@@ -28,6 +28,18 @@ describe('caja fuerte', () => {
     expect(v.leer().entries).toHaveLength(1);
   });
 
+  it('abre una caja antigua que guardaba el campo como "salt" en vez de "sal"', async () => {
+    await v.crear('4821');
+    await v.guardar('entries', [{ id: '1', tipo: 'roce' }]);
+    // Simula una caja creada por una versión previa de la app, que usaba
+    // el nombre en inglés para este campo.
+    const { sal, ...resto } = JSON.parse(localStorage.getItem(v.CLAVE_ALMACEN));
+    localStorage.setItem(v.CLAVE_ALMACEN, JSON.stringify({ ...resto, salt: sal }));
+    v.cerrar();
+    expect(await v.abrir('4821')).toBe(true);
+    expect(v.leer().entries).toHaveLength(1);
+  });
+
   it('rechaza el PIN incorrecto sin abrir nada', async () => {
     await v.crear('4821');
     v.cerrar();

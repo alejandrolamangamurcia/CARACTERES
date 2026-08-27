@@ -86,7 +86,10 @@ export async function abrir(pin) {
   let posible, salGuardada, datosDescifrados;
   try {
     const caja = JSON.parse(crudo);
-    salGuardada = deBase64(caja.sal);
+    // Cajas antiguas (de una versión previa de la app) guardaban este campo
+    // como "salt" en vez de "sal". Se aceptan las dos para no dejar fuera a
+    // quien tenga una caja creada antes de este cambio.
+    salGuardada = deBase64(caja.sal ?? caja.salt);
     posible = await derivarClave(pin, salGuardada);
     datosDescifrados = await descifrar(posible, caja.iv, caja.ct);
   } catch {
