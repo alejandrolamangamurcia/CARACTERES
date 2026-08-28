@@ -1553,6 +1553,7 @@ function Repaso({ config, onGuardarConfig }) {
       <p className="muted small">{indice + 1} de {tanda.length} · aciertos: {aciertosSesion}</p>
       <div className="card2">
         <p className="muted small">{pregunta.categoria} · {pregunta.familia}</p>
+        <p className="small" style={{ margin: '6px 0 0' }}>{pregunta.definicion}</p>
         <p className="muted small" style={{ margin: '6px 0 2px' }}>Ejemplo:</p>
         {pregunta.situaciones.map((s, i) => (
           <p key={i} className="small" style={{ margin: '2px 0' }}>· {s}</p>

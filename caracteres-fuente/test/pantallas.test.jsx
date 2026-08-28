@@ -866,6 +866,22 @@ describe('Estadísticas y Estudio', () => {
     expect(await screen.findByRole('button', { name: /Siguiente|Terminar/ })).toBeInTheDocument();
   });
 
+  it('el repaso muestra la definición del adjetivo junto a los tres ejemplos', async () => {
+    const u = userEvent.setup();
+    await entrar(u);
+    await irAMas(u, 'Estudio');
+    await u.click(screen.getByRole('button', { name: 'Empezar repaso' }));
+
+    const etiquetaEjemplo = await screen.findByText('Ejemplo:');
+    const tarjeta = etiquetaEjemplo.closest('.card2');
+    const parrafos = tarjeta.querySelectorAll('p');
+    // categoría · familia, definición, "Ejemplo:", y sus tres ejemplos = 6 párrafos.
+    expect(parrafos).toHaveLength(6);
+    const definicion = parrafos[1].textContent;
+    expect(definicion).not.toBe('Ejemplo:');
+    expect(definicion.length).toBeGreaterThan(5);
+  });
+
   it('preguntar a la IA por una conducta da prioridad a los adjetivos elegidos en el repaso', async () => {
     const u = userEvent.setup();
     const fetchEspia = vi.fn().mockResolvedValue({
